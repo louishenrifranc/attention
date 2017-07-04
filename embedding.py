@@ -5,15 +5,19 @@ import sonnet as snt
 
 
 class Embedding(snt.AbstractModule):
-    def __init__(self, vocab_size, config: Config):
-        super(Embedding, self).__init(name="embedding")
-        
-        self.vocab_size = vocab_size + 1 if self.zero_pad else 0
+    def __init__(self, vocab_size,
+                 *,
+                 scale=True,
+                 emb_size=200,
+                 zero_pad=False,
+                 initializer=None):
+        super(Embedding, self).__init__(name="embedding")
 
-        self.scale = getattr(config, "scale", True)
-        self.emb_size = getattr(config, "emb_size", 200)
-        self.zero_pad = getattr(config, "zero_pad", False)
-        self.initializer = getattr(config, "initializer", tf.contrib.layers.xavier_initializer)
+        self.vocab_size = vocab_size + 1 if self.zero_pad else 0
+        self.scale = scale
+        self.emb_size = emb_size
+        self.zero_pad = zero_pad
+        self.initializer = initializer
 
     def _build(self, inputs):
         """
@@ -24,7 +28,7 @@ class Embedding(snt.AbstractModule):
         embedding = tf.get_variable('lookup_embedding',
                                     dtype=tf.float32,
                                     shape=[self.vocab_size, self.emb_size],
-                                    initializer=self.initializer())
+                                    initializer=self.initializer)
 
         if self.zero_pad:
             embedding[0, :] = 0
