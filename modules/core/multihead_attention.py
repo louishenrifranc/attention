@@ -11,12 +11,15 @@ class MultiHeadAttention(snt.AbstractModule):
         self.mask_leftward_decoder = mask_leftward_decoder
 
     def create_mask_for_keys(self, tensor):
-        mask = tf.cast(tf.equal(tf.reduce_sum(tensor, axis=-1), 0.0), tf.float32)
+        mask = tf.to_float(tf.equal(tf.reduce_sum(tensor, axis=-1), 0.0))
         mask *= -2 ** 30
+        mask = tf.expand_dims(tf.expand_dims(mask, 1), -1)
+        mask = tf.tile(mask, [1, self.num_heads, 1, 1])
         return mask
 
     def create_mask_for_queries(self, tensor):
-        mask = tf.cast(tf.not_equal(tf.reduce_sum(tensor, axis=-1), 0.0), tf.float32)
+        mask = tf.to_float(tf.not_equal(tf.reduce_sum(tensor, axis=-1), 0.0))
+        mask = tf.tile(mask, [1, self.num_heads, 1, 1])
         return mask
 
     def create_mask_for_decoding(self, tensor):
@@ -48,8 +51,6 @@ class MultiHeadAttention(snt.AbstractModule):
         logits_q_wi_k_wi = dot_prod_op(q_wi, k_wi)
 
         mask_keys = self.create_mask_for_keys(keys)
-        mask_keys = tf.expand_dims(tf.expand_dims(mask_keys, 1))
-        mask_keys = tf.tile(mask_keys, [1, self.num_heads, 1, 1])
         logits_q_wi_k_wi += mask_keys
 
         if self.mask_leftward_decoder:
@@ -58,7 +59,6 @@ class MultiHeadAttention(snt.AbstractModule):
         softmax_q_wi_k_wi = tf.nn.softmax(logits_q_wi_k_wi)
 
         mask_queries = self.create_mask_for_queries(queries)
-        mask_queries = tf.tile(mask_queries, [1, self.num_heads, 1, 1])
         softmax_q_wi_k_wi *= mask_queries
         softmax_q_wi_k_wi = tf.layers.dropout(softmax_q_wi_k_wi, self.dropout_rate, is_training)
 
@@ -70,8 +70,3 @@ class MultiHeadAttention(snt.AbstractModule):
         return multi_attention
 
 
-if __name__ == "__main__":
-    m = MultiHeadAttention(num_heads=8, dropout=1)
-    query = tf.random_normal((32, 30, 128))
-    keys = tf.random_normal((32, 30, 128))
-    m(query, keys)

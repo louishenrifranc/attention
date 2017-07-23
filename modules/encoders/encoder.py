@@ -1,5 +1,5 @@
 import sonnet as snt
-from modules import PositionnalEmbedding, Dropout
+from ...modules import PositionnalEmbedding
 from ..encoders import EncoderBlock
 
 

@@ -1,5 +1,5 @@
 import sonnet as snt
-from modules import MultiHeadAttention, PointWiseFeedForward, LayerNorm
+from ...modules import MultiHeadAttention, PointWiseFeedForward, LayerNorm
 
 
 class EncoderBlock(snt.AbstractModule):
@@ -12,14 +12,19 @@ class EncoderBlock(snt.AbstractModule):
 
     def _build(self, inputs, is_training):
         keys = queries = inputs
-        output = MultiHeadAttention(num_heads=self.num_heads)(queries=queries,
-                                                              keys=keys,
-                                                              dropout=self.dropout_rate,
-                                                              is_training=is_training)
+        output = MultiHeadAttention(
+            num_heads=self.num_heads)(
+            queries=queries,
+            keys=keys,
+            dropout=self.dropout_rate,
+            is_training=is_training)
         output += queries
         output = LayerNorm()(output)
 
-        output = PointWiseFeedForward(hidden_size=self.hidden_size,
-                                      output_size=output.get_shape().as_list()[-1])
+        pointwise_module = PointWiseFeedForward(
+            hidden_size=self.hidden_size,
+            output_size=output.get_shape().as_list()[-1],
+            dropout_rate=self.dropout_rate)
+        output = pointwise_module(output, is_training)
         output = LayerNorm()(output)
         return output

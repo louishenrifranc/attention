@@ -1,5 +1,3 @@
-from config import Config
-
 import tensorflow as tf
 import sonnet as snt
 
@@ -13,7 +11,7 @@ class LayerNorm(snt.AbstractModule):
 
     def _build(self, inputs):
         layer_shape = inputs.get_shape().as_list()[-1]
-        self.beta = tf.zeros(shape=layer_shape)
+        self.beta = tf.ones(shape=layer_shape)
         self.gamma = tf.zeros(shape=layer_shape)
 
         mean, variance = tf.nn.moments(inputs, [-1], keep_dims=True)

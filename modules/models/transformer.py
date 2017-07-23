@@ -1,6 +1,6 @@
 import sonnet as snt
-from modules.encoders import Encoder
-from modules.decoders import Decoder
+from ..encoders import Encoder
+from ..decoders import Decoder
 
 
 class TransformerModule(snt.AbstractModule):

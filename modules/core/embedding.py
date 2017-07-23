@@ -10,7 +10,7 @@ class PositionnalEmbedding(snt.Embed):
                                                    name="embedding")
 
     def _build(self, ids):
-        emb_lookup = super(PositionnalEmbedding, self)(ids)
+        emb_lookup = super(PositionnalEmbedding, self)._build(ids)
         positionnal_embedding = tf.get_variable('positional_embedding',
                                                 dtype=tf.float32,
                                                 shape=emb_lookup[0].get_shape(),
