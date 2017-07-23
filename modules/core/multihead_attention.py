@@ -36,7 +36,6 @@ class MultiHeadAttention(snt.AbstractModule):
         if values is None:
             values = keys
 
-        import pytest; pytest.set_trace()
         num_outputs = queries.get_shape().as_list()[-1]
         q_w = tf.contrib.layers.fully_connected(queries, num_outputs)  # batch_size x query_l x d_model
         k_w = tf.contrib.layers.fully_connected(keys, num_outputs)  # batch_size x keys_l x d_model

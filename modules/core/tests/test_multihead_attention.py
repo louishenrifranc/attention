@@ -119,4 +119,29 @@ class TestMultiHeadAttention(tf.test.TestCase):
             sess.run(tf.global_variables_initializer())
             res = out.eval()
 
-            p = 1
+            self.assertEqual(res.shape, queries.shape)
+
+    def test_build_queries_equal_keys_with_mask_feedward(self):
+
+        queries = np.array([
+            [[1, 1, 1, 1], [1, 1, 1, 0], [0, 0, 0, 0]],
+            [[1, 1, 0, 1], [1, 0, 0, 1], [1, 0, 0, 1]]
+        ], dtype=np.float32)
+
+
+        queries = tf.convert_to_tensor(queries)
+        keys = queries
+
+        module = MultiHeadAttention(
+            num_heads=2,
+            mask_leftward_decoder=True
+        )
+
+        out = module(queries, keys)
+
+        with self.test_session() as sess:
+            sess.run(tf.global_variables_initializer())
+
+            res = out.eval()
+            self.assertEqual(res.shape, queries.shape)
+
