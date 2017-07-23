@@ -10,23 +10,26 @@ class MultiHeadAttention(snt.AbstractModule):
         self.dropout_rate = dropout_rate
         self.mask_leftward_decoder = mask_leftward_decoder
 
-    def create_mask_keys_tensor(self, tensor):
+    def create_mask_for_keys(self, tensor):
         mask = tf.cast(tf.equal(tf.reduce_sum(tensor, axis=-1), 0.0), tf.float32)
         mask *= -2 ** 30
         return mask
 
-    def create_mask_queries_tensor(self, tensor):
+    def create_mask_for_queries(self, tensor):
         mask = tf.cast(tf.not_equal(tf.reduce_sum(tensor, axis=-1), 0.0), tf.float32)
         return mask
+
+    def create_mask_for_decoding(self, tensor):
+        masking_leftward = 1 - tf.contrib.linalg.LinearOperatorTriL(tf.ones_like(tensor[0, 0]))
+        masking_leftward = tf.expand_dims(tf.expand_dims(masking_leftward, 0), 0)
+        masking_leftward = tf.tile(masking_leftward,
+                                   [tensor.get_shape().as_list()[0], self.num_heads, 1, 1])
+        masking_leftward *= - 2 ** 30
+        return masking_leftward
 
     def _build(self, queries, keys, values=None, is_training=False):
         if values is None:
             values = keys
-
-        mask_keys = self.create_mask_keys_tensor(keys)
-        mask_queries = self.create_mask_queries_tensor(queries)
-
-        mask_keys = tf.expand_dims(tf.expand_dims(mask_keys, 1))
 
         num_outputs = keys.get_shape().as_list()[-1]
         q_w = tf.contrib.layers.fully_connected(queries, num_outputs)  # batch_size x query_l x d_model
@@ -44,23 +47,22 @@ class MultiHeadAttention(snt.AbstractModule):
         dot_prod_op = snt.BatchApply(dot_product)
         logits_q_wi_k_wi = dot_prod_op(q_wi, k_wi)
 
+        mask_keys = self.create_mask_for_keys(keys)
+        mask_keys = tf.expand_dims(tf.expand_dims(mask_keys, 1))
         mask_keys = tf.tile(mask_keys, [1, self.num_heads, 1, 1])
         logits_q_wi_k_wi += mask_keys
 
         if self.mask_leftward_decoder:
-            masking_leftward = 1 - tf.contrib.linalg.LinearOperatorTriL(tf.ones_like(logits_q_wi_k_wi[0, 0]))
-            masking_leftward = tf.expand_dims(tf.expand_dims(masking_leftward, 0), 0)
-            masking_leftward = tf.tile(masking_leftward,
-                                       [logits_q_wi_k_wi.get_shape().as_list()[0], self.num_heads, 1, 1])
-            masking_leftward *= - 2 ** 30
-            logits_q_wi_k_wi += masking_leftward
+            logits_q_wi_k_wi += self.create_mask_for_decoding(logits_q_wi_k_wi)
 
         softmax_q_wi_k_wi = tf.nn.softmax(logits_q_wi_k_wi)
+
+        mask_queries = self.create_mask_for_queries(queries)
         mask_queries = tf.tile(mask_queries, [1, self.num_heads, 1, 1])
         softmax_q_wi_k_wi *= mask_queries
         softmax_q_wi_k_wi = tf.layers.dropout(softmax_q_wi_k_wi, self.dropout_rate, is_training)
 
-        attention_qwi_kwi = tf.matmul(softmax_q_wi_k_wi, values)
+        attention_qwi_kwi = tf.matmul(softmax_q_wi_k_wi, v_wi)
         attention_qwi_kwi = tf.reshape(attention_qwi_kwi, [0, 2, 3, 1])
         concat_attention = tf.concat(attention_qwi_kwi, axis=-1)
 
