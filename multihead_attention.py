@@ -2,36 +2,71 @@ from config import Config
 import tensorflow as tf
 import sonnet as snt
 
-
 class MultiHeadAttention(snt.AbstractModule):
-    def __init__(self, num_heads, dropout):
+    def __init__(self, num_heads, dropout, mask_leftward_decoder):
         super(MultiHeadAttention, self).__init__(name="multihead_attention")
 
         self.num_heads = num_heads
         self.dropout = dropout
+        self.mask_leftward_decoder = mask_leftward_decoder
 
-    def create_mask_tensor(self, tensor):
-        return tf.equal(tf.reduce_sum(tensor, axis=-1), 0.0)
+    def create_mask_keys_tensor(self, tensor):
+        mask = tf.cast(tf.equal(tf.reduce_sum(tensor, axis=-1), 0.0), tf.float32)
+        mask *= -2**30
+        return mask
+
+    def create_mask_queries_tensor(self, tensor):
+        mask = tf.cast(tf.non_equal(tf.reduce_sum(tensor, axis=-1),0.0), tf.float32)
+        return mask
 
     def _build(self, queries, keys, values=None):
         if values is None:
             values = keys
 
-        num_outputs = keys.get_shape().as_list()[-1]
-        queries = snt.BatchLinear(num_outputs, num_dims=3)(queries)  # batch_size x query_l x d_model
-        keys = snt.BatchLinear(num_outputs, num_dims=3)(keys)  # batch_size x keys_l x d_model
-        values = snt.BatchLinear(num_outputs, num_dims=3)(values)  # batch_size x values_l x d_model
+        mask_keys = self.create_mask_keys_tensor(keys)
+        mask_queries = self.create_mask_queries_tensor(queries)
 
-        queries = tf.transpose(tf.split(queries, num=self.num_heads, axis=2), [0, 1, 2])
-        keys = tf.transpose(tf.split(keys, num=self.num_heads, axis=2), [0, 1, 2])
-        values = tf.split(values, num=self.num_heads, axis=2)
+        mask_keys = tf.expand_dims(tf.expand_dims(mask_keys, 1))
+
+        num_outputs = keys.get_shape().as_list()[-1]
+        q_w = tf.contrib.layers.fully_connected(queries, num_outputs)  # batch_size x query_l x d_model
+        k_w = tf.contrib.layers.fully_connected(keys, num_outputs)  # batch_size x keys_l x d_model
+        v_w = tf.contrib.layers.fully_connected(values, num_outputs)  # batch_size x values_l x d_model
+
+        q_wi = tf.transpose(tf.split(q_w, self.num_heads, axis=2), [1, 0, 2, 3])
+        k_wi = tf.transpose(tf.split(k_w, self.num_heads, axis=2), [1, 0, 2, 3])
+        v_wi = tf.transpose(tf.split(v_w, self.num_heads, axis=2), [1, 0, 2, 3])
 
         def dot_product(query, key):
-            head_i = tf.matmul(query, tf.transpose(key, [0, 2, 1])) / tf.sqrt(keys.get_shape().as_list()[-1])
+            head_i = tf.matmul(query, tf.transpose(key, [0, 2, 1])) / key.get_shape().as_list()[-1] ** 0.5
             return head_i
 
         dot_prod_op = snt.BatchApply(dot_product)
-        logits = dot_prod_op(queries, keys)
+        logits_q_wi_k_wi = dot_prod_op(q_wi, k_wi)
 
-        mask_keys = tf.cast(self.create_mask_tensor(keys), tf.float32)
-        logits =
+        mask_keys = tf.tile(mask_keys, [1, self.num_heads, 1, 1])
+        logits_q_wi_k_wi += mask_keys
+
+        if self.mask_leftward_decoder:
+            masking_leftward = 1 - tf.contrib.linalg.LinearOperatorTriL(tf.ones_like(logits_q_wi_k_wi[0, 0]))
+            masking_leftward = tf.expand_dims(tf.expand_dims(masking_leftward, 0), 0)
+            masking_leftward = tf.tile(masking_leftward, [logits_q_wi_k_wi.get_shape().as_list()[0], self.num_heads, 1, 1])
+            masking_leftward *= - 2 ** 30
+            logits_q_wi_k_wi += masking_leftward
+
+        softmax_q_wi_k_wi = tf.nn.softmax(logits_q_wi_k_wi)
+        mask_queries = tf.tile(mask_queries, [1, self.num_heads, 1, 1])
+        softmax_q_wi_k_wi *= mask_queries
+
+        attention_qwi_kwi = tf.matmul(softmax_q_wi_k_wi, values)
+        attention_qwi_kwi = tf.reshape(attention_qwi_kwi, [0, 2, 3, 1])
+        concat_attention = tf.concat(attention_qwi_kwi, axis=-1)
+
+        multi_attention = tf.contrib.layers.fully_connected(concat_attention, num_outputs)
+        return multi_attention
+
+if __name__ == "__main__":
+    m = MultiHeadAttention(num_heads=8, dropout=1)
+    query = tf.random_normal((32, 30, 128))
+    keys  = tf.random_normal((32, 30, 128))
+    m(query, keys)
