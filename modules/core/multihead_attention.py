@@ -2,6 +2,7 @@ from config import Config
 import tensorflow as tf
 import sonnet as snt
 
+
 class MultiHeadAttention(snt.AbstractModule):
     def __init__(self, num_heads, dropout, mask_leftward_decoder):
         super(MultiHeadAttention, self).__init__(name="multihead_attention")
@@ -12,11 +13,11 @@ class MultiHeadAttention(snt.AbstractModule):
 
     def create_mask_keys_tensor(self, tensor):
         mask = tf.cast(tf.equal(tf.reduce_sum(tensor, axis=-1), 0.0), tf.float32)
-        mask *= -2**30
+        mask *= -2 ** 30
         return mask
 
     def create_mask_queries_tensor(self, tensor):
-        mask = tf.cast(tf.non_equal(tf.reduce_sum(tensor, axis=-1),0.0), tf.float32)
+        mask = tf.cast(tf.not_equal(tf.reduce_sum(tensor, axis=-1), 0.0), tf.float32)
         return mask
 
     def _build(self, queries, keys, values=None):
@@ -50,7 +51,8 @@ class MultiHeadAttention(snt.AbstractModule):
         if self.mask_leftward_decoder:
             masking_leftward = 1 - tf.contrib.linalg.LinearOperatorTriL(tf.ones_like(logits_q_wi_k_wi[0, 0]))
             masking_leftward = tf.expand_dims(tf.expand_dims(masking_leftward, 0), 0)
-            masking_leftward = tf.tile(masking_leftward, [logits_q_wi_k_wi.get_shape().as_list()[0], self.num_heads, 1, 1])
+            masking_leftward = tf.tile(masking_leftward,
+                                       [logits_q_wi_k_wi.get_shape().as_list()[0], self.num_heads, 1, 1])
             masking_leftward *= - 2 ** 30
             logits_q_wi_k_wi += masking_leftward
 
@@ -65,8 +67,9 @@ class MultiHeadAttention(snt.AbstractModule):
         multi_attention = tf.contrib.layers.fully_connected(concat_attention, num_outputs)
         return multi_attention
 
+
 if __name__ == "__main__":
     m = MultiHeadAttention(num_heads=8, dropout=1)
     query = tf.random_normal((32, 30, 128))
-    keys  = tf.random_normal((32, 30, 128))
+    keys = tf.random_normal((32, 30, 128))
     m(query, keys)
