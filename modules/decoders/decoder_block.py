@@ -3,16 +3,20 @@ from modules import MultiHeadAttention, PointWiseFeedForward, LayerNorm
 
 
 class DecoderBlock(snt.AbstractModule):
-    def __init__(self, num_heads, hidden_size):
+    def __init__(self, num_heads, hidden_size, dropout_rate):
         super(DecoderBlock, self).__init__(name="encoder_block")
 
         self.num_heads = num_heads
         self.hidden_size = hidden_size
+        self.dropout_rate = dropout_rate
 
     def _build(self, inputs, encoder_output):
         keys = queries = inputs
-        output = MultiHeadAttention(num_heads=self.num_heads, mask_leftward_decoder=True)(queries=queries,
-                                                                                          keys=keys)
+        multi_head_attention = MultiHeadAttention(num_heads=self.num_heads,
+                                                  mask_leftward_decoder=True,
+                                                  dropout_rate=self.dropout_rate)
+        output = multi_head_attention(queries=queries,
+                                      keys=keys)
         output += queries
         output = LayerNorm()(output)
 

@@ -2,12 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7e9b6809-9782-4f42-bc61-d2ec251be7d7" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/modules/core/embedding.py" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/embedding.py" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/dropout.py" afterPath="$PROJECT_DIR$/modules/core/dropout.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/layer.py" afterPath="$PROJECT_DIR$/modules/encoders/encoder_block.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/multihead_attention.py" afterPath="$PROJECT_DIR$/modules/core/multihead_attention.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/pointwise_feedforward.py" afterPath="$PROJECT_DIR$/modules/core/pointwise_feedforward.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/core/dropout.py" afterPath="$PROJECT_DIR$/modules/core/dropout.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/core/embedding.py" afterPath="$PROJECT_DIR$/modules/core/embedding.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/core/multihead_attention.py" afterPath="$PROJECT_DIR$/modules/core/multihead_attention.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/decoders/decoder_block.py" afterPath="$PROJECT_DIR$/modules/decoders/decoder_block.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/encoders/encoder.py" afterPath="$PROJECT_DIR$/modules/encoders/encoder.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/encoders/encoder_block.py" afterPath="$PROJECT_DIR$/modules/encoders/encoder_block.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -22,12 +23,47 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="600">
-      <file leaf-file-name="hyperparameters.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/hyperparameters.py">
+      <file leaf-file-name="embedding.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/modules/core/embedding.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="9" column="22" lean-forward="false" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="22" />
-              <caret line="10" column="22" lean-forward="false" selection-start-line="10" selection-start-column="22" selection-end-line="10" selection-end-column="22" />
+            <state relative-caret-position="495">
+              <caret line="15" column="79" lean-forward="false" selection-start-line="15" selection-start-column="79" selection-end-line="15" selection-end-column="79" />
+              <folding>
+                <element signature="e#0#23#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="decoder.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/modules/decoders/decoder.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="957">
+              <caret line="29" column="72" lean-forward="false" selection-start-line="29" selection-start-column="66" selection-end-line="29" selection-end-column="72" />
+              <folding>
+                <element signature="e#0#39#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="multihead_attention.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/modules/core/multihead_attention.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#23#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="___init__.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/modules/decoders/___init__.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="33">
+              <caret line="1" column="0" lean-forward="true" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -48,8 +84,8 @@
       <file leaf-file-name="encoder_block.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/modules/encoders/encoder_block.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="132">
-              <caret line="4" column="0" lean-forward="false" selection-start-line="4" selection-start-column="0" selection-end-line="9" selection-end-column="38" />
+            <state relative-caret-position="396">
+              <caret line="12" column="40" lean-forward="false" selection-start-line="12" selection-start-column="40" selection-end-line="12" selection-end-column="40" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
               </folding>
@@ -57,11 +93,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="encoder.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="encoder.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/modules/encoders/encoder.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="627">
+              <caret line="19" column="35" lean-forward="false" selection-start-line="19" selection-start-column="35" selection-end-line="19" selection-end-column="35" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
               </folding>
@@ -72,8 +108,8 @@
       <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/modules/encoders/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="39" lean-forward="false" selection-start-line="0" selection-start-column="39" selection-end-line="0" selection-end-column="39" />
+            <state relative-caret-position="33">
+              <caret line="1" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -82,22 +118,10 @@
       <file leaf-file-name="decoder_block.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/modules/decoders/decoder_block.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="891">
-              <caret line="27" column="0" lean-forward="true" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
+            <state relative-caret-position="561">
+              <caret line="17" column="54" lean-forward="true" selection-start-line="17" selection-start-column="54" selection-end-line="17" selection-end-column="54" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="layer_norm.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/modules/core/layer_norm.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="660">
-              <caret line="20" column="57" lean-forward="false" selection-start-line="20" selection-start-column="57" selection-end-line="20" selection-end-column="57" />
-              <folding>
-                <element signature="e#0#25#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -106,31 +130,11 @@
       <file leaf-file-name="dropout.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/modules/core/dropout.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="462">
-              <caret line="14" column="63" lean-forward="false" selection-start-line="14" selection-start-column="56" selection-end-line="14" selection-end-column="63" />
-              <folding>
-                <element signature="e#0#25#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="residual.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/modules/core/residual.py">
-          <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/modules/__init__.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="99">
-              <caret line="3" column="38" lean-forward="false" selection-start-line="3" selection-start-column="38" selection-end-line="3" selection-end-column="38" />
-              <folding />
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#23#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -169,12 +173,17 @@
         <option value="$PROJECT_DIR$/modules/core/residual.py" />
         <option value="$PROJECT_DIR$/modules/core/layer_norm.py" />
         <option value="$PROJECT_DIR$/modules/__init__.py" />
-        <option value="$PROJECT_DIR$/modules/decoders/decoder_block.py" />
         <option value="$PROJECT_DIR$/modules/core/pointwise_feedforward.py" />
         <option value="$PROJECT_DIR$/modules/decoders/encoder.py" />
         <option value="$PROJECT_DIR$/modules/encoders/__init__.py" />
-        <option value="$PROJECT_DIR$/modules/encoders/encoder_block.py" />
+        <option value="$PROJECT_DIR$/modules/core/embedding.py" />
+        <option value="$PROJECT_DIR$/modules/decoders/___init__.py" />
+        <option value="$PROJECT_DIR$/modules/core/dropout.py" />
         <option value="$PROJECT_DIR$/modules/encoders/encoder.py" />
+        <option value="$PROJECT_DIR$/modules/encoders/encoder_block.py" />
+        <option value="$PROJECT_DIR$/modules/decoders/decoder_block.py" />
+        <option value="$PROJECT_DIR$/modules/core/multihead_attention.py" />
+        <option value="$PROJECT_DIR$/modules/decoders/decoder.py" />
       </list>
     </option>
   </component>
@@ -591,7 +600,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#25#0" expanded="true" />
+            <element signature="e#0#23#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -675,7 +684,7 @@
         <state relative-caret-position="264">
           <caret line="11" column="12" lean-forward="false" selection-start-line="11" selection-start-column="12" selection-end-line="11" selection-end-column="12" />
           <folding>
-            <element signature="e#0#25#0" expanded="true" />
+            <element signature="e#0#23#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -724,26 +733,6 @@
         <state relative-caret-position="561">
           <caret line="17" column="63" lean-forward="false" selection-start-line="17" selection-start-column="63" selection-end-line="17" selection-end-column="63" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/modules/core/embedding.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/modules/core/multihead_attention.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2343">
-          <caret line="74" column="18" lean-forward="true" selection-start-line="74" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#25#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -804,7 +793,7 @@
         <state relative-caret-position="660">
           <caret line="20" column="57" lean-forward="false" selection-start-line="20" selection-start-column="57" selection-end-line="20" selection-end-column="57" />
           <folding>
-            <element signature="e#0#25#0" expanded="true" />
+            <element signature="e#0#25#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -817,22 +806,38 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/modules/decoders/decoder_block.py">
+    <entry file="file://$PROJECT_DIR$/modules/core/embedding.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="891">
-          <caret line="27" column="0" lean-forward="true" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
+        <state relative-caret-position="495">
+          <caret line="15" column="79" lean-forward="false" selection-start-line="15" selection-start-column="79" selection-end-line="15" selection-end-column="79" />
           <folding>
-            <element signature="e#0#20#0" expanded="true" />
+            <element signature="e#0#23#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules/encoders/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="33">
+          <caret line="1" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules/decoders/___init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="33">
+          <caret line="1" column="0" lean-forward="true" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/modules/core/dropout.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="462">
-          <caret line="14" column="63" lean-forward="false" selection-start-line="14" selection-start-column="56" selection-end-line="14" selection-end-column="63" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#25#0" expanded="true" />
+            <element signature="e#0#23#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -847,30 +852,52 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/modules/encoders/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="39" lean-forward="false" selection-start-line="0" selection-start-column="39" selection-end-line="0" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/modules/encoders/encoder_block.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="4" column="0" lean-forward="false" selection-start-line="4" selection-start-column="0" selection-end-line="9" selection-end-column="38" />
+        <state relative-caret-position="396">
+          <caret line="12" column="40" lean-forward="false" selection-start-line="12" selection-start-column="40" selection-end-line="12" selection-end-column="40" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/modules/encoders/encoder.py">
+    <entry file="file://$PROJECT_DIR$/modules/core/multihead_attention.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules/encoders/encoder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="627">
+          <caret line="19" column="35" lean-forward="false" selection-start-line="19" selection-start-column="35" selection-end-line="19" selection-end-column="35" />
+          <folding>
             <element signature="e#0#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules/decoders/decoder_block.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="561">
+          <caret line="17" column="54" lean-forward="true" selection-start-line="17" selection-start-column="54" selection-end-line="17" selection-end-column="54" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules/decoders/decoder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="957">
+          <caret line="29" column="72" lean-forward="false" selection-start-line="29" selection-start-column="66" selection-end-line="29" selection-end-column="72" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
           </folding>
         </state>
       </provider>

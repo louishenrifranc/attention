@@ -13,6 +13,6 @@ class PositionnalEmbedding(snt.Embed):
         emb_lookup = super(PositionnalEmbedding, self)(ids)
         positionnal_embedding = tf.get_variable('positional_embedding',
                                                 dtype=tf.float32,
-                                                shape=emb_lookup[0],
+                                                shape=emb_lookup[0].get_shape(),
                                                 initializer=tf.contrib.layers.xavier_initializer())
         return emb_lookup + positionnal_embedding

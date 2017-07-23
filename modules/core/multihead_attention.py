@@ -1,14 +1,13 @@
-from config import Config
 import tensorflow as tf
 import sonnet as snt
 
 
 class MultiHeadAttention(snt.AbstractModule):
-    def __init__(self, num_heads, dropout, mask_leftward_decoder):
+    def __init__(self, num_heads, dropout_rate, mask_leftward_decoder):
         super(MultiHeadAttention, self).__init__(name="multihead_attention")
 
         self.num_heads = num_heads
-        self.dropout = dropout
+        self.dropout_rate = dropout_rate
         self.mask_leftward_decoder = mask_leftward_decoder
 
     def create_mask_keys_tensor(self, tensor):
@@ -20,7 +19,7 @@ class MultiHeadAttention(snt.AbstractModule):
         mask = tf.cast(tf.not_equal(tf.reduce_sum(tensor, axis=-1), 0.0), tf.float32)
         return mask
 
-    def _build(self, queries, keys, values=None):
+    def _build(self, queries, keys, values=None, is_training=False):
         if values is None:
             values = keys
 
@@ -59,6 +58,7 @@ class MultiHeadAttention(snt.AbstractModule):
         softmax_q_wi_k_wi = tf.nn.softmax(logits_q_wi_k_wi)
         mask_queries = tf.tile(mask_queries, [1, self.num_heads, 1, 1])
         softmax_q_wi_k_wi *= mask_queries
+        softmax_q_wi_k_wi = tf.layers.dropout(softmax_q_wi_k_wi, self.dropout_rate, is_training)
 
         attention_qwi_kwi = tf.matmul(softmax_q_wi_k_wi, values)
         attention_qwi_kwi = tf.reshape(attention_qwi_kwi, [0, 2, 3, 1])
