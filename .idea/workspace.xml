@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7e9b6809-9782-4f42-bc61-d2ec251be7d7" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/core/dropout.py" afterPath="$PROJECT_DIR$/modules/core/dropout.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/core/embedding.py" afterPath="$PROJECT_DIR$/modules/core/embedding.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/core/multihead_attention.py" afterPath="$PROJECT_DIR$/modules/core/multihead_attention.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/decoders/decoder_block.py" afterPath="$PROJECT_DIR$/modules/decoders/decoder_block.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/encoders/encoder.py" afterPath="$PROJECT_DIR$/modules/encoders/encoder.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/encoders/encoder_block.py" afterPath="$PROJECT_DIR$/modules/encoders/encoder_block.py" />
-    </list>
+    <list default="true" id="7e9b6809-9782-4f42-bc61-d2ec251be7d7" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
