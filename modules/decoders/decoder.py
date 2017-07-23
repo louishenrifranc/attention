@@ -1,4 +1,4 @@
-from .decoder_block import DecoderBlock
+from ..decoders import DecoderBlock
 from modules import PositionnalEmbedding
 import sonnet as snt
 import tensorflow as tf
@@ -13,13 +13,13 @@ class Decoder(snt.AbstractModule):
         self.embed_params = embed_params
         self.vocab_size = vocab_size
 
-    def _build(self, features, labels, is_training):
+    def _build(self, inputs, labels, encoder_output, is_training):
         # TODO: reuse encoder embeddings
-        output = PositionnalEmbedding(**self.embed_params)(features)
+        output = PositionnalEmbedding(**self.embed_params)(inputs)
         output = tf.layers.dropout(output, self.params["dropout_rate"], training=is_training)
 
         for _ in range(self.params["num_blocks"]):
-            output = DecoderBlock(**self.block_params)(output, is_training)
+            output = DecoderBlock(**self.block_params)(output, encoder_output, is_training)
 
         logits = tf.contrib.layers.fully_connected(output, self.params["vocab_size"])
 
