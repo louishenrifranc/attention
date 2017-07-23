@@ -12,11 +12,10 @@ class EncoderBlock(snt.AbstractModule):
 
     def _build(self, inputs, is_training):
         keys = queries = inputs
-        output = MultiHeadAttention(
-            num_heads=self.num_heads)(
+        output = MultiHeadAttention(num_heads=self.num_heads,
+                                    dropout_rate=self.dropout_rate)(
             queries=queries,
             keys=keys,
-            dropout=self.dropout_rate,
             is_training=is_training)
         output += queries
         output = LayerNorm()(output)
