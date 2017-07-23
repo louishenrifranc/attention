@@ -2,9 +2,9 @@ import tensorflow as tf
 from attention.modules.decoders import Decoder
 
 
-class TestEncoderBlock(tf.test.TestCase):
+class TestDecoder(tf.test.TestCase):
     def setUp(self):
-        super(TestEncoderBlock, self).setUp()
+        super(TestDecoder, self).setUp()
 
         self.params = {
             "dropout_rate": 0.0,
@@ -35,7 +35,7 @@ class TestEncoderBlock(tf.test.TestCase):
 
         inputs = tf.random_uniform(
             (batch_size, seq_len_decoder, 1),
-            0, self.params["vocab_size"],
+            0, self.embed_params["vocab_size"],
             dtype=tf.int64)
         labels = tf.random_uniform(
             (batch_size, seq_len_decoder),

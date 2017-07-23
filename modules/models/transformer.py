@@ -27,6 +27,8 @@ class TransformerModule(snt.AbstractModule):
             block_params=self.params.encoder_params.encoder_block_params,
             embed_params=self.params.encoder_params.embed_params
         )
+
+        # TODO: incorrect
         labels = decoder_inputs[:, 1:]
         loss, _ = decoder(inputs=decoder_inputs, labels=labels, encoder_output=encoder_output, is_training=is_training)
         return loss
