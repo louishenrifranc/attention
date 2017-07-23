@@ -8,16 +8,12 @@ class Decoder(snt.AbstractModule):
     def __init__(
             self,
             params,
-            num_blocks,
-            vocab_size,
             block_params,
             embed_params):
         super(Decoder, self).__init__(name="decoder")
         self.params = params
-        self.num_blocks = num_blocks
         self.block_params = block_params
         self.embed_params = embed_params
-        self.vocab_size = vocab_size
 
     def _build(self, inputs, labels, encoder_output, is_training):
         # TODO: reuse encoder embeddings
@@ -26,6 +22,7 @@ class Decoder(snt.AbstractModule):
             output, self.params["dropout_rate"],
             training=is_training)
 
+        output = tf.squeeze(output)
         for _ in range(self.params["num_blocks"]):
             output = DecoderBlock(**self.block_params)(output,
                                                        encoder_output, is_training)
@@ -34,11 +31,14 @@ class Decoder(snt.AbstractModule):
             output, self.params["vocab_size"])
 
         with tf.name_scope("loss"):
-            mask_loss = tf.to_float(tf.not_equal(labels, 0))
+            mask_loss = tf.to_float(tf.not_equal(tf.reduce_sum(labels, -1),  0))
 
             loss = tf.nn.softmax_cross_entropy_with_logits(logits=logits,
                                                            labels=labels)
-            loss *= mask_loss
-            loss /= tf.reduce_sum(mask_loss, axis=1)
 
-        return loss, tf.nn.log_softmax(logits)
+            loss *= mask_loss
+
+            loss = tf.reduce_sum(loss, 1) / tf.reduce_sum(mask_loss, 1)
+            mean_loss = tf.reduce_sum(loss)
+
+        return mean_loss, tf.nn.log_softmax(logits)
