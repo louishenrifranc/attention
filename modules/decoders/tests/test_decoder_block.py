@@ -22,8 +22,7 @@ class TestDecoderBlock(tf.test.TestCase):
         encoder_outputs = tf.random_uniform(
             (batch_size, seq_encoder_len, embed_dim))
         out = self.module(inputs=inputs,
-                          encoder_output=encoder_outputs,
-                          is_training=True)
+                          encoder_output=encoder_outputs)
 
         with self.test_session() as sess:
             sess.run(tf.global_variables_initializer())

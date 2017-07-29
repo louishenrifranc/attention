@@ -3,19 +3,20 @@ import tensorflow.contrib.slim as slim
 from tensorflow.python.estimator.model_fn import EstimatorSpec, ModeKeys
 from modules import TransformerModule
 
+from algorithms.transformer.inputs_fn import get_input_fn
+
 
 class TransformerAlgorithm:
-    def __init__(self, params: dict = None):
+    def __init__(self, estimator_config, params: dict = None):
         self.model_params = params
         self.estimator = tf.estimator.Estimator(self.get_model_fn(),
-                                                config=None,
+                                                config=estimator_config,
                                                 params=self.model_params)
         self.training_params = {}
-
         self.stop_hook = None
 
     def get_model_fn(self):
-        def model_fn(features, labels, mode, params=None, config=None):
+        def model_fn(features, _, mode, params=None, _):
             train_op = None
             loss = None
             eval_metrics = None
@@ -23,7 +24,6 @@ class TransformerAlgorithm:
             if mode == ModeKeys.TRAIN:
                 transformer_model = TransformerModule(params=params)
                 step = slim.get_or_create_global_step()
-                features["is_training"] = True
                 loss = transformer_model(features)
                 train_op = slim.optimize_loss(loss=loss,
                                               global_step=step,
@@ -35,14 +35,19 @@ class TransformerAlgorithm:
             elif mode == ModeKeys.PREDICT:
                 raise NotImplementedError
             elif mode == ModeKeys.EVAL:
-                features["is_training"] = False
                 transformer_model = TransformerModule(params=params)
                 loss = transformer_model(features)
-            return EstimatorSpec(train_op=train_op, loss=loss, eval_metric_ops=eval_metrics,
-                                 predictions=predictions,
+
+            return EstimatorSpec(train_op=train_op, loss=loss, eval_metric_ops=eval_metrics, predictions=predictions,
                                  mode=mode)
 
         return model_fn
 
-    def train(self, train_params):
+    def train(self, train_params, extra_hooks=None):
+        input_fn = get_input_fn(batch_size=train_params["batch_size"], num_epochs=train_params["num_epochs"])
+
         self.training_params = train_params
+        hooks = [self.stop_hook] if extra_hooks is None else [self.stop_hook] + extra_hooks
+
+        self.estimator.train(input_fn=input_fn, steps=self.training_params.get("steps", None),
+                             max_steps=self.training_params.get("steps", None), hooks=hooks)

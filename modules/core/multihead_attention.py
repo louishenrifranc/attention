@@ -32,7 +32,7 @@ class MultiHeadAttention(snt.AbstractModule):
         masking_leftward *= - 2 ** 30
         return masking_leftward
 
-    def _build(self, queries, keys, values=None, is_training=False):
+    def _build(self, queries, keys, values=None):
         if values is None:
             values = keys
 
@@ -62,7 +62,9 @@ class MultiHeadAttention(snt.AbstractModule):
 
         mask_queries = self.create_mask_for_queries(queries)
         softmax_q_wi_k_wi *= mask_queries
-        softmax_q_wi_k_wi = tf.layers.dropout(softmax_q_wi_k_wi, self.dropout_rate, is_training)
+
+        if self.dropout_rate > 0.0:
+            softmax_q_wi_k_wi = tf.layers.dropout(softmax_q_wi_k_wi, self.dropout_rate)
 
         attention_qwi_kwi = tf.matmul(softmax_q_wi_k_wi, v_wi)
         attention_qwi_kwi = tf.transpose(attention_qwi_kwi, [0, 2, 3, 1])
@@ -71,5 +73,3 @@ class MultiHeadAttention(snt.AbstractModule):
 
         multi_attention = tf.contrib.layers.fully_connected(concat_attention, num_outputs)
         return multi_attention
-
-

@@ -12,7 +12,7 @@ class PointWiseFeedForward(snt.AbstractModule):
         self.output_size = output_size
         self.dropout_rate = dropout_rate
 
-    def _build(self, inputs, is_training=False):
+    def _build(self, inputs):
         """
 
         :param inputs:
@@ -22,11 +22,13 @@ class PointWiseFeedForward(snt.AbstractModule):
 
         def pointwise(x):
             hidden = snt.Conv1D(output_channels=output_size, kernel_shape=1)(x)
-            hidden = tf.layers.dropout(hidden, self.dropout_rate, training=is_training)
+            if self.dropout_rate > 0.0:
+                hidden = tf.layers.dropout(hidden, self.dropout_rate)
             hidden = tf.nn.relu(hidden)
 
             outputs = snt.Conv1D(output_channels=output_size, kernel_shape=1)(hidden)
-            outputs = tf.layers.dropout(outputs, self.dropout_rate, training=is_training)
+            if self.dropout_rate > 0.0:
+                outputs = tf.layers.dropout(outputs, self.dropout_rate)
             return tf.nn.relu(outputs)
 
         return pointwise(inputs)

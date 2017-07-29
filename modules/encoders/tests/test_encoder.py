@@ -35,8 +35,7 @@ class TestEncoder(tf.test.TestCase):
             0, self.embed_params["vocab_size"],
             dtype=tf.int64)
 
-        out = self.module(inputs=inputs,
-                    is_training=True)
+        out = self.module(inputs=inputs)
 
         with self.test_session() as sess:
             sess.run(tf.global_variables_initializer())

@@ -15,23 +15,22 @@ class Decoder(snt.AbstractModule):
         self.block_params = block_params
         self.embed_params = embed_params
 
-    def _build(self, inputs, labels, encoder_output, is_training):
+    def _build(self, inputs, labels, encoder_output):
         # TODO: reuse encoder embeddings
         output = PositionnalEmbedding(**self.embed_params)(inputs)
         output = tf.layers.dropout(
-            output, self.params["dropout_rate"],
-            training=is_training)
+            output, self.params["dropout_rate"])
 
         output = tf.squeeze(output)
         for _ in range(self.params["num_blocks"]):
             output = DecoderBlock(**self.block_params)(output,
-                                                       encoder_output, is_training)
+                                                       encoder_output)
 
         logits = tf.contrib.layers.fully_connected(
             output, self.params["vocab_size"])
 
         with tf.name_scope("loss"):
-            mask_loss = tf.to_float(tf.not_equal(tf.reduce_sum(labels, -1),  0))
+            mask_loss = tf.to_float(tf.not_equal(tf.reduce_sum(labels, -1), 0))
 
             loss = tf.nn.softmax_cross_entropy_with_logits(logits=logits,
                                                            labels=labels)

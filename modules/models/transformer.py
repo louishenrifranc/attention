@@ -9,10 +9,8 @@ class TransformerModule(snt.AbstractModule):
         self.params = params
 
     def build(self, features):
-        encoder_inputs = features["encoder_inputs"]
-        decoder_inputs = features["decoder_inputs"]
-
-        is_training = features["is_training"]
+        encoder_inputs = features["context"]
+        decoder_inputs = features["answer"]
 
         encoder = Encoder(
             params=self.params.encoder_params.params,
@@ -20,7 +18,7 @@ class TransformerModule(snt.AbstractModule):
             embed_params=self.params.encoder_params.embed_params
         )
 
-        encoder_output = encoder(inputs=encoder_inputs, is_training=is_training)
+        encoder_output = encoder(inputs=encoder_inputs)
 
         decoder = Decoder(
             params=self.params.encoder_params.params,
@@ -30,5 +28,5 @@ class TransformerModule(snt.AbstractModule):
 
         # TODO: incorrect
         labels = decoder_inputs[:, 1:]
-        loss, _ = decoder(inputs=decoder_inputs, labels=labels, encoder_output=encoder_output, is_training=is_training)
+        loss, _ = decoder(inputs=decoder_inputs, labels=labels, encoder_output=encoder_output)
         return loss

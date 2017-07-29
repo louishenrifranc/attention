@@ -10,13 +10,10 @@ class EncoderBlock(snt.AbstractModule):
         self.hidden_size = hidden_size
         self.dropout_rate = dropout_rate
 
-    def _build(self, inputs, is_training):
+    def _build(self, inputs):
         keys = queries = inputs
-        output = MultiHeadAttention(num_heads=self.num_heads,
-                                    dropout_rate=self.dropout_rate)(
-            queries=queries,
-            keys=keys,
-            is_training=is_training)
+        output = MultiHeadAttention(num_heads=self.num_heads, dropout_rate=self.dropout_rate)(queries=queries,
+                                                                                              keys=keys)
         output += queries
         output = LayerNorm()(output)
 
@@ -24,6 +21,6 @@ class EncoderBlock(snt.AbstractModule):
             hidden_size=self.hidden_size,
             output_size=output.get_shape().as_list()[-1],
             dropout_rate=self.dropout_rate)
-        output = pointwise_module(output, is_training)
+        output = pointwise_module(output)
         output = LayerNorm()(output)
         return output

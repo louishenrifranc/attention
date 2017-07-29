@@ -48,8 +48,7 @@ class TestDecoder(tf.test.TestCase):
 
         out = self.module(inputs=inputs,
                     labels=labels,
-                    encoder_output=encoder_output,
-                    is_training=True)
+                    encoder_output=encoder_output)
 
         with self.test_session() as sess:
             sess.run(tf.global_variables_initializer())
