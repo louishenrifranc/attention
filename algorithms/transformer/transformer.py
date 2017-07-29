@@ -29,7 +29,7 @@ class TransformerAlgorithm:
                                               global_step=step,
                                               learning_rate=self.training_params["learning_rate"],
                                               clip_gradients=self.training_params["clip_gradients"],
-                                              optimizer=self.model_params["optimizer"],
+                                              optimizer=params["optimizer"],
                                               summaries=slim.OPTIMIZER_SUMMARIES
                                               )
             elif mode == ModeKeys.PREDICT:
@@ -50,4 +50,4 @@ class TransformerAlgorithm:
         hooks = [self.stop_hook] if extra_hooks is None else [self.stop_hook] + extra_hooks
 
         self.estimator.train(input_fn=input_fn, steps=self.training_params.get("steps", None),
-                             max_steps=self.training_params.get("steps", None), hooks=hooks)
+                             max_steps=self.training_params.get("max_steps", None), hooks=hooks)

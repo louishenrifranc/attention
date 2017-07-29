@@ -21,9 +21,9 @@ class TransformerModule(snt.AbstractModule):
         encoder_output = encoder(inputs=encoder_inputs)
 
         decoder = Decoder(
-            params=self.params.encoder_params.params,
-            block_params=self.params.encoder_params.encoder_block_params,
-            embed_params=self.params.encoder_params.embed_params
+            params=self.params.decoder_params.params,
+            block_params=self.params.decoder_params.encoder_block_params,
+            embed_params=self.params.decoder_params.embed_params
         )
 
         # TODO: incorrect
