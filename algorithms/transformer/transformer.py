@@ -1,16 +1,18 @@
 import tensorflow  as tf
 import tensorflow.contrib.slim as slim
 from tensorflow.python.estimator.model_fn import EstimatorSpec, ModeKeys
-from modules import TransformerModule
+from attention.modules import TransformerModule
 
-from algorithms.transformer.inputs_fn import get_input_fn
+from attention.algorithms.transformer.inputs_fn import get_input_fn
 
 
 class TransformerAlgorithm:
-    def __init__(self, params: dict = None):
+    def __init__(self, estimator_run_config, params: dict = None):
         self.model_params = params
         self.estimator = tf.estimator.Estimator(self.get_model_fn(),
-                                                params=self.model_params)
+                                                params=self.model_params,
+                                                config=estimator_run_config,
+                                                model_dir=estimator_run_config.model_dir)
         self.training_params = {}
 
     def get_model_fn(self):
@@ -20,7 +22,7 @@ class TransformerAlgorithm:
             eval_metrics = None
             predictions = None
             if mode == ModeKeys.TRAIN:
-                transformer_model = TransformerModule(params=params)
+                transformer_model = TransformerModule(params=self.model_params)
                 step = slim.get_or_create_global_step()
                 loss = transformer_model(features)
                 train_op = slim.optimize_loss(loss=loss,
@@ -44,7 +46,8 @@ class TransformerAlgorithm:
     def train(self, train_params, extra_hooks=None):
         self.training_params = train_params
 
-        input_fn = get_input_fn(batch_size=train_params["batch_size"], num_epochs=train_params["num_epochs"])
+        input_fn = get_input_fn(batch_size=train_params["batch_size"], num_epochs=train_params["num_epochs"],
+                                context_filename=train_params["context_filename"], answer_filename=train_params["answer_filename"])
 
         hooks = extra_hooks
         self.estimator.train(input_fn=input_fn, steps=train_params.get("steps", None),

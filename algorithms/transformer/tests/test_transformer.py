@@ -1,15 +1,35 @@
 import tensorflow as tf
-from algorithms import TransformerAlgorithm
-from default_config import train_params, model_params
+import os
+from attention.algorithms import TransformerAlgorithm
+from attention.default_config import train_params, model_params, estimator_params
+from attention.utils.mock import mock_dialogue_gen
+from attention.algorithms.transformer.inputs_fn import create_textline_file
+from attention.utils.config import AttrDict
 
 
 class TestHREDAlgorithm(tf.test.TestCase):
     def setUp(self):
         super(TestHREDAlgorithm, self).setUp()
 
-        self.params = model_params
+        test_folder = os.makedirs("test", exist_ok=True)
+        self.params = AttrDict.from_nested_dict(model_params)
         self.train_params = train_params
-        self.algorithm = TransformerAlgorithm(params=self.params)
+        self.train_params["context_filename"] = "context.txt"
+        self.train_params["answer_filename"] = "answer.txt"
+
+        create_textline_file(mock_dialogue_gen(num_samples=10000),
+                             self.train_params["context_filename"],
+                             self.train_params["answer_filename"])
+
+        estimator_params["model_dir"] = test_folder
+        estimator_run_config = tf.estimator.RunConfig()
+        estimator_run_config.replace(**estimator_params)
+        self.algorithm = TransformerAlgorithm(estimator_run_config, params=self.params)
+
+
 
     def test_train(self):
-        self.algorithm.train(self.train_params)
+        with self.assertLogs() as cm:
+            self.algorithm.train(self.train_params)
+
+        print(cm.output)

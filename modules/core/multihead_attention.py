@@ -28,18 +28,18 @@ class MultiHeadAttention(snt.AbstractModule):
         masking_leftward = 1 - tf.contrib.linalg.LinearOperatorTriL(tf.ones_like(tensor[0, 0, :, :])).to_dense()
         masking_leftward = tf.expand_dims(tf.expand_dims(masking_leftward, 0), 0)
         masking_leftward = tf.tile(masking_leftward,
-                                   [tensor.get_shape().as_list()[0], self.num_heads, 1, 1])
+                                   [1, self.num_heads, 1, 1])
         masking_leftward *= - 2 ** 30
         return masking_leftward
 
     def _build(self, queries, keys, values=None):
         if values is None:
             values = keys
+        input_dim = queries.get_shape().as_list()[-1]
 
-        num_outputs = queries.get_shape().as_list()[-1]
-        q_w = tf.contrib.layers.fully_connected(queries, num_outputs)  # batch_size x query_l x d_model
-        k_w = tf.contrib.layers.fully_connected(keys, num_outputs)  # batch_size x keys_l x d_model
-        v_w = tf.contrib.layers.fully_connected(values, num_outputs)  # batch_size x values_l x d_model
+        q_w = tf.contrib.layers.fully_connected(queries, input_dim)  # batch_size x query_l x d_model
+        k_w = tf.contrib.layers.fully_connected(keys, input_dim)  # batch_size x keys_l x d_model
+        v_w = tf.contrib.layers.fully_connected(values, input_dim)  # batch_size x values_l x d_model
 
         q_wi = tf.transpose(tf.split(q_w, self.num_heads, axis=2), [1, 0, 2, 3])
         k_wi = tf.transpose(tf.split(k_w, self.num_heads, axis=2), [1, 0, 2, 3])
@@ -69,7 +69,7 @@ class MultiHeadAttention(snt.AbstractModule):
         attention_qwi_kwi = tf.matmul(softmax_q_wi_k_wi, v_wi)
         attention_qwi_kwi = tf.transpose(attention_qwi_kwi, [0, 2, 3, 1])
 
-        concat_attention = tf.reshape(attention_qwi_kwi, [-1, queries.get_shape().as_list()[1], num_outputs])
+        concat_attention = tf.reshape(attention_qwi_kwi, [-1, queries.get_shape().as_list()[1], input_dim])
 
-        multi_attention = tf.contrib.layers.fully_connected(concat_attention, num_outputs)
+        multi_attention = tf.contrib.layers.fully_connected(concat_attention, input_dim)
         return multi_attention

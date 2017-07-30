@@ -4,6 +4,8 @@ import sonnet as snt
 
 class PositionnalEmbedding(snt.AbstractModule):
     def __init__(self, vocab_size, embed_dim):
+        super(PositionnalEmbedding, self).__init__(name="positional_embedding")
+
         with self._enter_variable_scope():
             self.embed = snt.Embed(
                 vocab_size=vocab_size,

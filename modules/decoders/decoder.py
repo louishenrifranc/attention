@@ -21,7 +21,6 @@ class Decoder(snt.AbstractModule):
         output = tf.layers.dropout(
             output, self.params["dropout_rate"])
 
-        output = tf.squeeze(output)
         for _ in range(self.params["num_blocks"]):
             output = DecoderBlock(**self.block_params)(output,
                                                        encoder_output)
@@ -29,6 +28,7 @@ class Decoder(snt.AbstractModule):
         logits = tf.contrib.layers.fully_connected(
             output, self.params["vocab_size"])
 
+        labels = tf.one_hot(labels, self.params["vocab_size"], axis=-1)
         with tf.name_scope("loss"):
             mask_loss = tf.to_float(tf.not_equal(tf.reduce_sum(labels, -1), 0))
 

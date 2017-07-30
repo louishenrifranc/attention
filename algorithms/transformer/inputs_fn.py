@@ -61,7 +61,7 @@ def create_textline_file(dialogue_gen, context_filename, answer_filename):
             answer_file.write(" ".join([str(x) for x in features["answer"]]) + "\n")
 
 
-def get_input_fn(batch_size, num_epochs, context_filename, answer_filename):
+def get_input_fn(batch_size, num_epochs, context_filename, answer_filename, max_sequence_len=50):
     def input_fn():
         source_dataset = tf.contrib.data.TextLineDataset(context_filename)
         target_dataset = tf.contrib.data.TextLineDataset(answer_filename)
@@ -69,6 +69,7 @@ def get_input_fn(batch_size, num_epochs, context_filename, answer_filename):
         def map_dataset(dataset):
             dataset = dataset.map(lambda string: tf.string_split([string]).values)
             dataset = dataset.map(lambda token: tf.string_to_number(token, tf.int64))
+            dataset = dataset.map(lambda token: token[:max_sequence_len])
             dataset = dataset.map(lambda tokens: (tokens, tf.size(tokens)))
             return dataset
 
@@ -78,15 +79,13 @@ def get_input_fn(batch_size, num_epochs, context_filename, answer_filename):
         dataset = tf.contrib.data.Dataset.zip((source_dataset, target_dataset))
         dataset = dataset.repeat(num_epochs)
         dataset = dataset.padded_batch(batch_size,
-                                       padded_shapes=((tf.TensorShape([None]), tf.TensorShape([])),
-                                                      (tf.TensorShape([None]), tf.TensorShape([]))
+                                       padded_shapes=((tf.TensorShape([max_sequence_len]), tf.TensorShape([])),
+                                                      (tf.TensorShape([max_sequence_len]), tf.TensorShape([]))
                                                       ))
-
-        dataset = dataset.shuffle(buffer_size=10000)
 
         iterator = dataset.make_one_shot_iterator()
         next_element = iterator.get_next()
-        return next_element
+        return next_element, None
 
     return input_fn
 

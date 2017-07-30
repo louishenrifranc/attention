@@ -5,7 +5,7 @@ model_params = {
             "num_heads": 8, "hidden_size": 512, "dropout_rate": 0.5
         },
         "embed_params": {
-            "vocab_size": 32, "embed_dim": 100
+            "vocab_size": 32, "embed_dim": 128
         },
         "params": {
             "dropout_rate": 0.5, "num_blocks": 3
@@ -17,7 +17,7 @@ model_params = {
         },
 
         "embed_params": {
-            "vocab_size": 32, "embed_dim": 100
+            "vocab_size": 32, "embed_dim": 128
         },
 
         "params": {
@@ -31,9 +31,13 @@ train_params = {
     "clip_gradients": 5.0,
     "batch_size": 32,
     "num_epochs": 3,
-    "steps": 3
+    "steps": 100
 }
 
-test_params = {
+test_params = {}
 
+
+estimator_params = {
+    "save_summary_steps": 20,
+    "save_checkpoints_steps": 20,
 }

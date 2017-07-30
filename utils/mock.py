@@ -1,5 +1,5 @@
 import numpy as np
-from utils.dialogue import Dialogue, Utterances
+from attention.utils.dialogue import Dialogue, Utterances
 
 
 def create_mock_dialogue(num_utterances, max_len_tokenized, vocab_size):
