@@ -16,7 +16,7 @@ class TransformerAlgorithm:
         self.stop_hook = None
 
     def get_model_fn(self):
-        def model_fn(features, _, mode, params=None, _):
+        def model_fn(features, labels, mode, params=None, config=None):
             train_op = None
             loss = None
             eval_metrics = None
