@@ -21,3 +21,4 @@ class Encoder(snt.AbstractModule):
             encoder_block = EncoderBlock(**self.block_params)
             output = encoder_block(output)
         return output
+

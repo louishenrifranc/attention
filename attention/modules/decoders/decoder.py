@@ -19,16 +19,16 @@ class Decoder(snt.AbstractModule):
         # TODO: reuse encoder embeddings
         output = PositionnalEmbedding(**self.embed_params)(inputs)
         output = tf.layers.dropout(
-            output, self.params["dropout_rate"])
+            output, self.params.dropout_rate)
 
-        for _ in range(self.params["num_blocks"]):
+        for _ in range(self.params.num_blocks):
             output = DecoderBlock(**self.block_params)(output,
                                                        encoder_output)
 
         logits = tf.contrib.layers.fully_connected(
-            output, self.params["vocab_size"])
+            output, self.params.vocab_size)
 
-        labels = tf.one_hot(labels, self.params["vocab_size"], axis=-1)
+        labels = tf.one_hot(labels, self.params.vocab_size, axis=-1)
         with tf.name_scope("loss"):
             mask_loss = tf.to_float(tf.not_equal(tf.reduce_sum(labels, -1), 0))
 

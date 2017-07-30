@@ -30,6 +30,7 @@ class TransformerModule(snt.AbstractModule):
 
         # TODO: incorrect
         eos_token = self.params.get("eos_token", 0)
-        labels = tf.concat([decoder_inputs[:, 1:], tf.expand_dims(tf.ones_like(decoder_inputs[:, 0]), axis=-1) * eos_token], axis=-1)
+        labels = tf.concat(
+            [decoder_inputs[:, 1:], tf.expand_dims(tf.ones_like(decoder_inputs[:, 0]), axis=-1) * eos_token], axis=-1)
         loss, _ = decoder(inputs=decoder_inputs, labels=labels, encoder_output=encoder_output)
         return loss

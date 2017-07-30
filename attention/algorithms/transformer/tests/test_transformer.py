@@ -4,7 +4,7 @@ import re
 import numpy as np
 
 from attention.algorithms import TransformerAlgorithm
-from attention.default_config import train_params, model_params, estimator_params
+from attention.test_config import train_params, model_params, estimator_params
 from attention.utils.mock import mock_dialogue_gen
 from attention.algorithms.transformer.inputs_fn import create_textline_file
 from attention.utils.config import AttrDict

@@ -1,5 +1,6 @@
 model_params = {
     "optimizer": "Adam",
+    
     "encoder_params": {
         "encoder_block_params": {
             "num_heads": 8, "hidden_size": 512, "dropout_rate": 0.5
