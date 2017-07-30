@@ -61,3 +61,7 @@ class TestInputFunction(tf.test.TestCase):
 
                 len_context = res[1][1]
                 self.assertAllEqual(len_context, np.sum(np.where(res[1][0] > 0, 1, 0), axis=1))
+
+        os.remove(context_filename)
+        os.remove(answer_filename)
+

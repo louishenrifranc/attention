@@ -7,13 +7,11 @@ from algorithms.transformer.inputs_fn import get_input_fn
 
 
 class TransformerAlgorithm:
-    def __init__(self, estimator_config, params: dict = None):
+    def __init__(self, params: dict = None):
         self.model_params = params
         self.estimator = tf.estimator.Estimator(self.get_model_fn(),
-                                                config=estimator_config,
                                                 params=self.model_params)
         self.training_params = {}
-        self.stop_hook = None
 
     def get_model_fn(self):
         def model_fn(features, labels, mode, params=None, config=None):
@@ -44,10 +42,10 @@ class TransformerAlgorithm:
         return model_fn
 
     def train(self, train_params, extra_hooks=None):
+        self.training_params = train_params
+
         input_fn = get_input_fn(batch_size=train_params["batch_size"], num_epochs=train_params["num_epochs"])
 
-        self.training_params = train_params
-        hooks = [self.stop_hook] if extra_hooks is None else [self.stop_hook] + extra_hooks
-
-        self.estimator.train(input_fn=input_fn, steps=self.training_params.get("steps", None),
-                             max_steps=self.training_params.get("max_steps", None), hooks=hooks)
+        hooks = extra_hooks
+        self.estimator.train(input_fn=input_fn, steps=train_params.get("steps", None),
+                             max_steps=train_params.get("max_steps", None), hooks=hooks)
