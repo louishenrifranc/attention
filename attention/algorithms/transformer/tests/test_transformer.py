@@ -1,5 +1,8 @@
 import tensorflow as tf
 import os
+import re
+import numpy as np
+
 from attention.algorithms import TransformerAlgorithm
 from attention.default_config import train_params, model_params, estimator_params
 from attention.utils.mock import mock_dialogue_gen
@@ -26,14 +29,12 @@ class TestHREDAlgorithm(tf.test.TestCase):
         estimator_run_config.replace(**estimator_params)
         self.algorithm = TransformerAlgorithm(estimator_run_config, params=self.params)
 
-
-
     def test_train(self):
         with self.assertLogs() as cm:
             self.algorithm.train(self.train_params)
 
         logs = cm.output
-        self.assertTrue(logs[2].startswith("INFO:tensorflow:Saving checkpoints for 1 into"))
+        self.assertTrue(logs[1].startswith("INFO:tensorflow:Saving checkpoints for 1 into"))
         steps = re.findall("loss = \d*.\d*", ' '.join(logs))
         final_step = logs[-1][:-1]
         losses = np.asarray([float(step.split()[-1]) for step in steps] + [float(final_step.split()[-1])])
