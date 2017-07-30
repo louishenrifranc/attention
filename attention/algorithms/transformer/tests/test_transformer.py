@@ -17,12 +17,12 @@ class TestHREDAlgorithm(tf.test.TestCase):
         test_folder = os.makedirs("test", exist_ok=True)
         self.params = AttrDict.from_nested_dict(model_params)
         self.train_params = train_params
-        self.train_params["context_filename"] = "context.txt"
-        self.train_params["answer_filename"] = "answer.txt"
+        self.context_filename = "context.txt"
+        self.answer_filename = "answer.txt"
 
         create_textline_file(mock_dialogue_gen(num_samples=10000),
-                             self.train_params["context_filename"],
-                             self.train_params["answer_filename"])
+                             self.context_filename,
+                             self.answer_filename)
 
         estimator_params["model_dir"] = test_folder
         estimator_run_config = tf.estimator.RunConfig()
@@ -31,7 +31,7 @@ class TestHREDAlgorithm(tf.test.TestCase):
 
     def test_train(self):
         with self.assertLogs() as cm:
-            self.algorithm.train(self.train_params)
+            self.algorithm.train(self.train_params, self.context_filename, self.answer_filename)
 
         logs = cm.output
         self.assertTrue(logs[1].startswith("INFO:tensorflow:Saving checkpoints for 1 into"))

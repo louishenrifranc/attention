@@ -1,9 +1,11 @@
 from collections import namedtuple
 import argparse
 import json
+import os
 
 from attention.utils.config import AttrDict
 from attention.algorithms import TransformerAlgorithm
+from attention.algorithms.transformer.inputs_fn import create_textline_file
 
 DatasetDirs = namedtuple("DatasetDirs", "train_data_dir valid_data_dir test_data_dir")
 
@@ -37,6 +39,25 @@ class TrainAttention(object):
         parsed_args = parser.parse_args()
         return parsed_args
 
+    def create_txt_filename(self, dataset_type):
+        directory = getattr(self.datasets, dataset_type)
+
+        def dialogue_generator():
+            filenames = [os.path.join(directory, file) for file in os.listdir(directory) if file.endswith('.json')]
+            for filename in filenames:
+                with open(filename, 'rt', encoding='utf-8') as f:
+                    for dialogue in json.load(f):
+                        yield dialogue
+
+        txt_directory = os.path.join(self.output_dir, os.path.basename(directory))
+        os.makedirs(txt_directory)
+        context_filename = os.path.join(txt_directory, "context.txt")
+        answer_filename = os.path.join(txt_directory, "answer.txt")
+        create_textline_file(dialogue_gen=dialogue_generator(),
+                             context_filename=context_filename,
+                             answer_filename=answer_filename)
+        return context_filename, answer_filename
+
     def main(self):
         """Initializes a model and starts training using the args provided
         """
@@ -51,7 +72,10 @@ class TrainAttention(object):
         self.train(model=model)
 
     def train(self, model):
-        model.train(train_params=self.config.train_params)
+        context_filename, answer_filename = self.create_txt_filename("train_data_dir")
+        model.train(train_params=self.config.train_params,
+                    train_answer_filename=answer_filename,
+                    train_context_filename=context_filename)
 
 
 if __name__ == '__main__':

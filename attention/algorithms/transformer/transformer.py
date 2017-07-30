@@ -43,11 +43,12 @@ class TransformerAlgorithm:
 
         return model_fn
 
-    def train(self, train_params, extra_hooks=None):
+    def train(self, train_params, train_context_filename, train_answer_filename, extra_hooks=None):
         self.training_params = train_params
 
         input_fn = get_input_fn(batch_size=train_params["batch_size"], num_epochs=train_params["num_epochs"],
-                                context_filename=train_params["context_filename"], answer_filename=train_params["answer_filename"])
+                                context_filename=train_context_filename,
+                                answer_filename=train_answer_filename)
 
         hooks = extra_hooks
         self.estimator.train(input_fn=input_fn, steps=train_params.get("steps", None),
