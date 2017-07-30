@@ -32,4 +32,9 @@ class TestHREDAlgorithm(tf.test.TestCase):
         with self.assertLogs() as cm:
             self.algorithm.train(self.train_params)
 
-        print(cm.output)
+        logs = cm.output
+        self.assertTrue(logs[2].startswith("INFO:tensorflow:Saving checkpoints for 1 into"))
+        steps = re.findall("loss = \d*.\d*", ' '.join(logs))
+        final_step = logs[-1][:-1]
+        losses = np.asarray([float(step.split()[-1]) for step in steps] + [float(final_step.split()[-1])])
+        self.assertGreater(losses[0], losses[-1])
