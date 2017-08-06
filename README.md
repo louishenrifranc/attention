@@ -6,10 +6,7 @@ Paper:
 https://arxiv.org/abs/1706.03762
 
 ## Usage
-1. Install requirements
-```
-pip install -r requirements.txt
-```
+1. Install requirements ```pip install -r requirements.txt```
 2. Install [sonnet](https://github.com/deepmind/sonnet)
 3. Run ```run_micro_services.sh```
 
