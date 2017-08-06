@@ -11,7 +11,7 @@ https://arxiv.org/abs/1706.03762
 - [X] Construct input function
 - [X] Build Estimator
 - [X] Run estimator
-- [ ] Plug into a workflow
-- [ ] Add validation queue
+- [X] Plug into a workflow
+- [X] Add validation queue
 - [ ] Iterate over model improvements
 
