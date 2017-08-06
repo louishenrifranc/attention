@@ -35,6 +35,11 @@ train_params = {
     "steps": 20
 }
 
+validation_params = {
+    "batch_size": 32,
+    "num_epochs": 3,
+    "steps": 1
+}
 test_params = {}
 
 

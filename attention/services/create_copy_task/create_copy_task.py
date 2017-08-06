@@ -1,3 +1,4 @@
+import numpy as np
 import argparse
 import json
 import shutil
@@ -21,7 +22,7 @@ class CreateCopyTask(object):
         """
         parser = argparse.ArgumentParser(description="Creating CopyTask for Transformer")
         parser.add_argument('--output_dir', help='Path to the output dir', required=True)
-        parser.add_argument('-c', '--config', help='Path to the configuration.json', dest='configuration_file',
+        parser.add_argument('-c', '--config', help='Path to the configuration.json',
                             required=True)
         parsed_args = parser.parse_args()
         return parsed_args
@@ -62,5 +63,5 @@ if __name__ == '__main__':
 
     with open(args.config, mode='r') as config_file:
         args.config = json.load(config_file)
-
+    args = vars(args)
     CreateCopyTask(**args).main()

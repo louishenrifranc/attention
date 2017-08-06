@@ -1,6 +1,6 @@
 import sonnet as snt
 import tensorflow as tf
-
+from copy import deepcopy
 from ..encoders import Encoder
 from ..decoders import Decoder
 

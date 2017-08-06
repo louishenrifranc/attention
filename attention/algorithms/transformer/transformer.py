@@ -7,7 +7,7 @@ from attention.algorithms.transformer.inputs_fn import get_input_fn
 
 
 class TransformerAlgorithm:
-    def __init__(self, estimator_run_config, params: dict = None):
+    def __init__(self, estimator_run_config, params = None):
         self.model_params = params
         self.estimator = tf.estimator.Estimator(self.get_model_fn(),
                                                 params=self.model_params,
@@ -36,7 +36,7 @@ class TransformerAlgorithm:
             elif mode == ModeKeys.PREDICT:
                 raise NotImplementedError
             elif mode == ModeKeys.EVAL:
-                transformer_model = TransformerModule(params=params)
+                transformer_model = TransformerModule(params=self.model_params)
                 loss = transformer_model(features)
 
             return EstimatorSpec(train_op=train_op, loss=loss, eval_metric_ops=eval_metrics, predictions=predictions,
