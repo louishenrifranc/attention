@@ -34,8 +34,8 @@ class TestEncoder(tf.test.TestCase):
             (batch_size, seq_len_encoder, 1),
             0, self.embed_params["vocab_size"],
             dtype=tf.int64)
-
-        out = self.module(inputs=inputs)
+        sequences_length = tf.convert_to_tensor([1, seq_len_encoder, 5, 10])
+        out = self.module(inputs=inputs, sequences_length=sequences_length)
 
         with self.test_session() as sess:
             sess.run(tf.global_variables_initializer())

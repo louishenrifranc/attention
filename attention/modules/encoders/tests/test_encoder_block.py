@@ -18,8 +18,8 @@ class TestEncoderBlock(tf.test.TestCase):
         seq_len = 10
         embed_dim = 32
         inputs = tf.random_uniform((batch_size, seq_len, embed_dim))
-
-        out = self.module(inputs)
+        seq_len = tf.convert_to_tensor([5, seq_len, 1, 0])
+        out = self.module(inputs, seq_len)
 
         with self.test_session() as sess:
             sess.run(tf.global_variables_initializer())

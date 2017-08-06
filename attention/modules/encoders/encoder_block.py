@@ -10,10 +10,13 @@ class EncoderBlock(snt.AbstractModule):
         self.hidden_size = hidden_size
         self.dropout_rate = dropout_rate
 
-    def _build(self, inputs):
+    def _build(self, inputs, sequence_length):
         keys = queries = inputs
+        keys_len, queries_len = sequence_length
         output = MultiHeadAttention(num_heads=self.num_heads, dropout_rate=self.dropout_rate)(queries=queries,
-                                                                                              keys=keys)
+                                                                                              keys=keys,
+                                                                                              queries_len=queries_len,
+                                                                                              keys_len=keys_len)
         output += queries
         output = LayerNorm()(output)
 

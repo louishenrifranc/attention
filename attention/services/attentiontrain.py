@@ -51,7 +51,7 @@ class TrainAttention(object):
 
         txt_directory = os.path.join(self.output_dir, os.path.basename(directory))
         os.makedirs(txt_directory)
-        context_filename = os.path.join(txt_directory, "context.txt")
+        context_filename = os.path.(txt_directory, "context.txt")
         answer_filename = os.path.join(txt_directory, "answer.txt")
         create_textline_file(dialogue_gen=dialogue_generator(),
                              context_filename=context_filename,

@@ -11,8 +11,8 @@ class TransformerModule(snt.AbstractModule):
         self.params = params
 
     def _build(self, features):
-        encoder_inputs = features[0][0]
-        decoder_inputs = features[1][0]
+        encoder_inputs, encoder_length = features[0]
+        decoder_inputs, decoder_length = features[1]
 
         encoder = Encoder(
             params=self.params.encoder_params.params,
@@ -20,7 +20,7 @@ class TransformerModule(snt.AbstractModule):
             embed_params=self.params.encoder_params.embed_params
         )
 
-        encoder_output = encoder(inputs=encoder_inputs)
+        encoder_output, positional_embedding = encoder(inputs=encoder_inputs, sequences_length=encoder_length)
 
         decoder = Decoder(
             params=self.params.decoder_params.params,
@@ -28,9 +28,11 @@ class TransformerModule(snt.AbstractModule):
             embed_params=self.params.decoder_params.embed_params
         )
 
-        # TODO: incorrect
-        eos_token = self.params.get("eos_token", 0)
+        pad_token = self.params.get("pad_token", 0)
         labels = tf.concat(
-            [decoder_inputs[:, 1:], tf.expand_dims(tf.ones_like(decoder_inputs[:, 0]), axis=-1) * eos_token], axis=-1)
-        loss, _ = decoder(inputs=decoder_inputs, labels=labels, encoder_output=encoder_output)
+            [decoder_inputs[:, 1:], tf.expand_dims(tf.ones_like(decoder_inputs[:, 0]), axis=-1) * pad_token], axis=-1)
+
+        loss, _ = decoder(inputs=decoder_inputs, sequence_length=decoder_length, labels=labels,
+                          encoder_output=encoder_output, encoder_sequence_length=encoder_length,
+                          embedding_lookup=positional_embedding)
         return loss

@@ -10,21 +10,25 @@ class DecoderBlock(snt.AbstractModule):
         self.hidden_size = hidden_size
         self.dropout_rate = dropout_rate
 
-    def _build(self, inputs, encoder_output):
+    def _build(self, inputs, sequence_length, encoder_output, encoder_sequence_length):
         keys = queries = inputs
         multi_head_attention = MultiHeadAttention(
             num_heads=self.num_heads,
             mask_leftward_decoder=True,
             dropout_rate=self.dropout_rate)
         output = multi_head_attention(queries=queries,
-                                      keys=keys)
+                                      keys=keys,
+                                      queries_len=sequence_length,
+                                      keys_len=sequence_length)
         output += queries
         output = LayerNorm()(output)
 
         output = MultiHeadAttention(
             num_heads=self.num_heads)(
             queries=output,
-            keys=encoder_output)
+            keys=encoder_output,
+            queries_len=sequence_length,
+            keys_len=encoder_sequence_length)
         output += queries
         output = LayerNorm()(output)
 

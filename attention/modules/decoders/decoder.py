@@ -15,15 +15,17 @@ class Decoder(snt.AbstractModule):
         self.block_params = block_params
         self.embed_params = embed_params
 
-    def _build(self, inputs, labels, encoder_output):
-        # TODO: reuse encoder embeddings
-        output = PositionnalEmbedding(**self.embed_params)(inputs)
+    def _build(self, inputs, sequence_length, labels, encoder_output, encoder_sequence_length, embedding_lookup=None):
+        if embedding_lookup is None:
+            output = PositionnalEmbedding(**self.embed_params)(inputs)
+        else:
+            output = embedding_lookup(inputs)
         output = tf.layers.dropout(
             output, self.params.dropout_rate)
 
         for _ in range(self.params.num_blocks):
-            output = DecoderBlock(**self.block_params)(output,
-                                                       encoder_output)
+            output = DecoderBlock(**self.block_params)(output, sequence_length,
+                                                       encoder_output, encoder_sequence_length)
 
         logits = tf.contrib.layers.fully_connected(
             output, self.params.vocab_size)

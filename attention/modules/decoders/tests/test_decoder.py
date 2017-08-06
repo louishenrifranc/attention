@@ -2,6 +2,7 @@ import tensorflow as tf
 from attention.modules.decoders import Decoder
 
 
+# TODO: add test about adding Embeddding
 class TestDecoder(tf.test.TestCase):
     def setUp(self):
         super(TestDecoder, self).setUp()
@@ -44,11 +45,15 @@ class TestDecoder(tf.test.TestCase):
         labels = tf.one_hot(labels, depth=self.params["vocab_size"], axis=-1)
 
         encoder_output = tf.random_uniform(
-    (batch_size, seq_len_encoder, embed_dim))
+            (batch_size, seq_len_encoder, embed_dim))
+        encoder_seq_len = tf.convert_to_tensor([3, seq_len_encoder, 8, 1])
+        decoder_seq_len = tf.convert_to_tensor([3, seq_len_decoder, 8, 1])
 
         out = self.module(inputs=inputs,
-                    labels=labels,
-                    encoder_output=encoder_output)
+                          sequence_length=decoder_seq_len,
+                          labels=labels,
+                          encoder_output=encoder_output,
+                          encoder_sequence_length=encoder_seq_len)
 
         with self.test_session() as sess:
             sess.run(tf.global_variables_initializer())

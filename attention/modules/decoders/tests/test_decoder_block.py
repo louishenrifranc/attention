@@ -21,8 +21,12 @@ class TestDecoderBlock(tf.test.TestCase):
         inputs = tf.random_uniform((batch_size, seq_decoder_len, embed_dim))
         encoder_outputs = tf.random_uniform(
             (batch_size, seq_encoder_len, embed_dim))
+        encoder_len = tf.convert_to_tensor([3, seq_encoder_len, 10, 1])
+        decoder_len = tf.convert_to_tensor([3, seq_decoder_len, 10, 1])
         out = self.module(inputs=inputs,
-                          encoder_output=encoder_outputs)
+                          encoder_output=encoder_outputs,
+                          sequence_length=decoder_len,
+                          encoder_sequence_length=encoder_len)
 
         with self.test_session() as sess:
             sess.run(tf.global_variables_initializer())
