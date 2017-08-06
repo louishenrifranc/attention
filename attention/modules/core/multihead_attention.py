@@ -12,14 +12,14 @@ class MultiHeadAttention(snt.AbstractModule):
 
     def create_mask_for_keys(self, keys, keys_length):
         # batch_size x keys_l
-        mask = 1 - tf.sequence_mask(lengths=keys_length, maxlen=keys.get_shape().as_list[1], dtype=tf.float32)
+        mask = 1 - tf.sequence_mask(lengths=keys_length, maxlen=keys.get_shape().as_list()[1], dtype=tf.float32)
         mask *= -2 ** 30
         mask = tf.expand_dims(tf.expand_dims(mask, 1), 1)  # batch_size x 1 x 1 x keys_l
         return mask
 
     def create_mask_for_queries(self, queries, queries_len):
         # batch_size x queries_l
-        mask = tf.sequence_mask(lengths=queries_len, maxlen=queries.get_shape().as_list[1], dtype=tf.float32)
+        mask = tf.sequence_mask(lengths=queries_len, maxlen=queries.get_shape().as_list()[1], dtype=tf.float32)
         mask = tf.expand_dims(tf.expand_dims(mask, 1), -1)  # batch_size x 1 x queries x 1
         return mask
 
@@ -54,7 +54,7 @@ class MultiHeadAttention(snt.AbstractModule):
         logits_q_wi_k_wi += mask_keys  # batch_size x num_heads x queries_l x keys_l
 
         if self.mask_leftward_decoder:
-            logits_q_wi_k_wi += self.create_mask_for_decoding(*logits_q_wi_k_wi.get_shape().as_list[2:])
+            logits_q_wi_k_wi += self.create_mask_for_decoding(*logits_q_wi_k_wi.get_shape().as_list()[2:])
 
         softmax_q_wi_k_wi = tf.nn.softmax(logits_q_wi_k_wi)  # batch_size x num_heads x queries_l x keys_l
 

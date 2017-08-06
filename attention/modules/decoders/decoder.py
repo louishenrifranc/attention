@@ -20,6 +20,7 @@ class Decoder(snt.AbstractModule):
             output = PositionnalEmbedding(**self.embed_params)(inputs)
         else:
             output = embedding_lookup(inputs)
+        output = tf.squeeze(output)
         output = tf.layers.dropout(
             output, self.params.dropout_rate)
 

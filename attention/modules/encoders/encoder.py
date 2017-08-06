@@ -14,11 +14,10 @@ class Encoder(snt.AbstractModule):
 
     def _build(self, inputs, sequences_length, reuse_embeddings=True):
         positionnal_embedding = PositionnalEmbedding(**self.embed_params)
-        output = positionnal_embedding(inputs)
+        output = tf.squeeze(positionnal_embedding(inputs))
 
         if self.params.dropout_rate > 0.0:
             output = tf.layers.dropout(output, self.params.dropout_rate)
-
         for _ in range(self.params.num_blocks):
             encoder_block = EncoderBlock(**self.block_params)
             output = encoder_block(output, sequences_length)

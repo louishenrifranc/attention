@@ -30,6 +30,7 @@ class TestHREDAlgorithm(tf.test.TestCase):
         self.algorithm = TransformerAlgorithm(estimator_run_config, params=self.params)
 
     def test_train(self):
+        self.train_params["steps"] = 20
         with self.assertLogs() as cm:
             self.algorithm.train(self.train_params, self.context_filename, self.answer_filename)
 

@@ -1,28 +1,28 @@
 import tensorflow as tf
 from attention.modules.decoders import Decoder
-
+from attention.utils.config import AttrDict
 
 # TODO: add test about adding Embeddding
 class TestDecoder(tf.test.TestCase):
     def setUp(self):
         super(TestDecoder, self).setUp()
 
-        self.params = {
+        self.params = AttrDict.from_nested_dict({
             "dropout_rate": 0.0,
             "num_blocks": 8,
             "vocab_size": 30
-        }
+        })
 
-        self.block_params = {
+        self.block_params = AttrDict.from_nested_dict({
             "num_heads": 4,
             "hidden_size": 64,
             "dropout_rate": 0.0
-        }
+        })
 
-        self.embed_params = {
+        self.embed_params = AttrDict.from_nested_dict({
             "vocab_size": 30,
             "embed_dim": 40
-        }
+        })
 
         self.module = Decoder(params=self.params,
                               block_params=self.block_params,
@@ -42,7 +42,6 @@ class TestDecoder(tf.test.TestCase):
             (batch_size, seq_len_decoder),
             0, self.params["vocab_size"],
             dtype=tf.int64)
-        labels = tf.one_hot(labels, depth=self.params["vocab_size"], axis=-1)
 
         encoder_output = tf.random_uniform(
             (batch_size, seq_len_encoder, embed_dim))

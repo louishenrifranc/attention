@@ -21,20 +21,19 @@ class TestMultiHeadAttention(tf.test.TestCase):
             [[1, 1, 1], [0, 0, 0], [0, 0, 0]],
             [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
         ], dtype=np.float32)
+        keys_tf = tf.convert_to_tensor(keys)
         keys_length = tf.convert_to_tensor([2, 1, 0])
-        out = self.module.create_mask_for_keys(keys, keys_length=keys_length)
+        out = self.module.create_mask_for_keys(keys_tf, keys_length=keys_length)
         with self.test_session():
             res = out.eval()
             self.assertEqual(res.shape, (keys.shape[0],
-                                         self.num_heads,
+                                         1,
                                          1,
                                          keys.shape[1]
                                          ))
 
             self.assertAllClose(res[2, :, :, :], np.full(
-                (self.num_heads, 1, keys.shape[1]), -2 ** 30))
-            self.assertAllClose(res[0, :, :, 0], res[1, :, :, 0])
-            self.assertTrue(all(res[0, :, :, 0] != res[1, :, :, 1]))
+                (1, 1, keys.shape[1]), -2 ** 30))
 
     def test_create_mask_for_queries(self):
         queries = np.array([
@@ -42,20 +41,20 @@ class TestMultiHeadAttention(tf.test.TestCase):
             [[1, 1, 1], [0, 0, 0], [0, 0, 0]],
             [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
         ], dtype=np.float32)
+
+        queries_tf = tf.convert_to_tensor(queries)
         queries_length = tf.convert_to_tensor([2, 1, 0])
-        out = self.module.create_mask_for_queries(queries, queries_length)
+        out = self.module.create_mask_for_queries(queries_tf, queries_length)
         with self.test_session():
             res = out.eval()
 
             self.assertEqual(res.shape, (queries.shape[0],
-                                         self.num_heads,
+                                         1,
                                          queries.shape[1],
                                          1))
 
             self.assertAllEqual(res[2, :, :, :], np.zeros(
-                (self.num_heads, queries.shape[1], 1)))
-            self.assertAllClose(res[0, :, 0, :], res[1, :, 0, :])
-            self.assertTrue(all(res[0, :, 0, :] != res[1, :, 1, :]))
+                (1, queries.shape[1], 1)))
 
     def test_create_mask_for_decoding(self):
         batch_size = 3
@@ -66,15 +65,13 @@ class TestMultiHeadAttention(tf.test.TestCase):
         with self.test_session():
             res = out.eval()
 
-            self.assertEqual(res.shape, (batch_size,
-                                         self.num_heads,
+            self.assertEqual(res.shape, (1,
+                                         1,
                                          seq_len_queries,
                                          seq_len_keys))
-            for bs in range(batch_size):
-                for n_h in range(self.num_heads):
-                    for i in range(seq_len_queries):
-                        self.assertTrue(all(res[bs, n_h, i, :i + 1] == 0))
-                        self.assertTrue(all(res[bs, n_h, i, i + 1:] != 0))
+            for i in range(seq_len_queries):
+                self.assertTrue(all(res[0, 0, i, :i + 1] == 0))
+                self.assertTrue(all(res[0, 0, i, i + 1:] != 0))
 
     def test_build_queries_equal_keys(self):
         queries = np.array([

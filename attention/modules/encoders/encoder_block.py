@@ -12,7 +12,7 @@ class EncoderBlock(snt.AbstractModule):
 
     def _build(self, inputs, sequence_length):
         keys = queries = inputs
-        keys_len, queries_len = sequence_length
+        keys_len =  queries_len = sequence_length
         output = MultiHeadAttention(num_heads=self.num_heads, dropout_rate=self.dropout_rate)(queries=queries,
                                                                                               keys=keys,
                                                                                               queries_len=queries_len,

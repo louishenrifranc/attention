@@ -2,21 +2,13 @@ import os
 import tensorflow as tf
 import numpy as np
 
-from utils.mock import mock_dialogue_gen
-from algorithms.transformer.inputs_fn import make_example, create_sample, create_tf_records, filter_and_modify_dialogue, \
-    get_input_fn, create_textline_file
+from attention.utils.mock import mock_dialogue_gen
+from attention.algorithms.transformer.inputs_fn import create_sample, filter_and_modify_dialogue, get_input_fn, create_textline_file
 
 
 class TestInputFunction(tf.test.TestCase):
     def setUp(self):
         super(TestInputFunction, self).setUp()
-
-    def test_make_example(self):
-        context = [0, 1, 2, 4, 5]
-        answer = [1, 1, 4, 5, 2, 2]
-        example = make_example(context, answer)
-
-        self.assertIsNotNone(example)
 
     def test_create_sample(self):
         sample_gen = create_sample(dialogue_gen=mock_dialogue_gen())
@@ -25,13 +17,6 @@ class TestInputFunction(tf.test.TestCase):
             self.assertIsInstance(sample["context"], list)
             self.assertIsInstance(sample["answer"], list)
 
-    def test_create_tf_records(self):
-        filename = "file.tfrecords"
-        sample_gen = mock_dialogue_gen()
-        create_tf_records(sample_gen, filename)
-
-        self.assertTrue(os.path.isfile(filename))
-        os.remove(filename)
 
     def test_get_input_fn(self):
         context_filename = "context.txt"
@@ -42,7 +27,7 @@ class TestInputFunction(tf.test.TestCase):
         create_textline_file(sample_gen, context_filename, answer_filename)
 
         input_fn = get_input_fn(batch_size, num_epochs, context_filename, answer_filename)
-        inputs = input_fn()
+        inputs, _ = input_fn()
 
         init = tf.global_variables_initializer()
         with self.test_session() as sess:

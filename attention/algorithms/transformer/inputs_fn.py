@@ -53,9 +53,9 @@ def get_input_fn(batch_size, num_epochs, context_filename, answer_filename, max_
         def map_dataset(dataset):
             dataset = dataset.map(lambda string: tf.string_split([string]).values)
             dataset = dataset.map(lambda token: tf.string_to_number(token, tf.int64))
-            dataset = dataset.map(lambda tokens: tf.concat((tokens, tf.constant(0)), -1))
             dataset = dataset.map(lambda tokens: (tokens, tf.size(tokens)))
             dataset = dataset.map(lambda tokens, size: (tokens[:max_sequence_len], tf.minimum(size, max_sequence_len)))
+            dataset = dataset.map(lambda tokens, size, (tf.reshape(tokens, [max_sequence_len]), size))
             return dataset
 
         source_dataset = map_dataset(source_dataset)
