@@ -31,7 +31,7 @@ class TestEncoder(tf.test.TestCase):
         seq_len_encoder = 13
 
         inputs = tf.random_uniform(
-            (batch_size, seq_len_encoder, 1),
+            (batch_size, seq_len_encoder),
             0, self.embed_params["vocab_size"],
             dtype=tf.int64)
         sequences_length = tf.convert_to_tensor([1, seq_len_encoder, 5, 10])

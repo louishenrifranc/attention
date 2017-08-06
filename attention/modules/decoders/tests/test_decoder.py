@@ -35,7 +35,7 @@ class TestDecoder(tf.test.TestCase):
         embed_dim = self.embed_params["embed_dim"]
 
         inputs = tf.random_uniform(
-            (batch_size, seq_len_decoder, 1),
+            (batch_size, seq_len_decoder),
             0, self.embed_params["vocab_size"],
             dtype=tf.int64)
         labels = tf.random_uniform(

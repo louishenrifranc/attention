@@ -14,7 +14,8 @@ class Encoder(snt.AbstractModule):
 
     def _build(self, inputs, sequences_length, reuse_embeddings=True):
         positionnal_embedding = PositionnalEmbedding(**self.embed_params)
-        output = tf.squeeze(positionnal_embedding(inputs))
+        output = positionnal_embedding(inputs)
+
 
         if self.params.dropout_rate > 0.0:
             output = tf.layers.dropout(output, self.params.dropout_rate)

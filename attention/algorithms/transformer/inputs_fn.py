@@ -1,5 +1,6 @@
 import tensorflow as tf
-
+import numpy as np
+import shutil
 
 def filter_and_modify_dialogue(dialogue):
     # Remove single role dialogues
@@ -38,6 +39,15 @@ def create_sample(dialogue_gen):
                 features["answer"] = None
 
 
+def create_copy_task_files(context_filename, answer_filename, vocab_size, num_examples, max_sequence_length):
+    with open(context_filename, 'w') as file:
+        for _ in range(num_examples):
+            num_tokens = np.random.randint(2, max_sequence_length, 1)
+            tokens = np.random.randint(0, vocab_size, num_tokens)
+            file.write(" ".join([str(x) for x in list(tokens)]) + "\n")
+
+    shutil.copyfile(context_filename, answer_filename)
+
 def create_textline_file(dialogue_gen, context_filename, answer_filename):
     with open(context_filename, "w") as context_file, open(answer_filename, "w") as answer_file:
         for features in create_sample(dialogue_gen):
@@ -55,7 +65,6 @@ def get_input_fn(batch_size, num_epochs, context_filename, answer_filename, max_
             dataset = dataset.map(lambda token: tf.string_to_number(token, tf.int64))
             dataset = dataset.map(lambda tokens: (tokens, tf.size(tokens)))
             dataset = dataset.map(lambda tokens, size: (tokens[:max_sequence_len], tf.minimum(size, max_sequence_len)))
-            dataset = dataset.map(lambda tokens, size, (tf.reshape(tokens, [max_sequence_len]), size))
             return dataset
 
         source_dataset = map_dataset(source_dataset)
@@ -73,3 +82,7 @@ def get_input_fn(batch_size, num_epochs, context_filename, answer_filename, max_
         return next_element, None
 
     return input_fn
+
+import os
+os.makedirs("../../../files/", exist_ok=True)
+create_copy_task_files("../../../files/context.txt", "../../../files/answer.txt", 10000, 200000, 150)
