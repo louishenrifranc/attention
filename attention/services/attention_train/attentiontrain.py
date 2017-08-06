@@ -16,7 +16,6 @@ class TrainAttention(object):
         self.datasets = DatasetDirs(train_data_dir=train_data_dir,
                                     valid_data_dir=valid_data_dir,
                                     test_data_dir=None)
-        self.output_dir = output_dir
         self.config = AttrDict(config)
 
         self._metadata = AttrDict(metadata)
@@ -73,9 +72,9 @@ class TrainAttention(object):
 
     def train(self, model):
         context_filename, answer_filename = self.create_txt_filename("train_data_dir")
-        model.train(train_params=self.config.train_params,
-                    train_answer_filename=answer_filename,
-                    train_context_filename=context_filename)
+        model.train_and_evaluate(train_params=self.config.train_params,
+                                 train_answer_filename=answer_filename,
+                                 train_context_filename=context_filename)
 
 
 if __name__ == '__main__':
@@ -87,4 +86,4 @@ if __name__ == '__main__':
     with open(args.metadata, mode='r') as metadata_file:
         args.metadata = json.load(metadata_file)
 
-    TrainAttention(**args)
+    TrainAttention(**args).main()
