@@ -3,7 +3,7 @@ import argparse
 import json
 import os
 
-from attention.utils.config import AttrDict
+from attention.utils.config import AttrDict, RunConfig
 from attention.algorithms import TransformerAlgorithm
 from attention.algorithms.transformer.inputs_fn import create_textline_file
 
@@ -16,9 +16,9 @@ class TrainAttention(object):
         self.datasets = DatasetDirs(train_data_dir=train_data_dir,
                                     valid_data_dir=valid_data_dir,
                                     test_data_dir=None)
-        self.config = AttrDict(config)
+        self.config = AttrDict.from_nested_dict(config)
 
-        self._metadata = AttrDict(metadata)
+        self._metadata = AttrDict.from_nested_dict(metadata)
 
     @staticmethod
     def parse_args():
@@ -31,50 +31,43 @@ class TrainAttention(object):
         parser = argparse.ArgumentParser(description="Training Program for Deep Learning Models")
         parser.add_argument('--train_data_dir', help='Path to the train dir', required=True)
         parser.add_argument('--metadata', help='Path to the metadata', required=True)
-        parser.add_argument('--valid_data_dir', help='Path to the valid dir', required=True)
+        parser.add_argument('--valid_data_dir', help='Path to the valid dir')
         parser.add_argument('--output_dir', help='Path to the output dir', required=True)
-        parser.add_argument('-c', '--config', help='Path to the configuration.json',
-                            dest='configuration_file', required=True)
+        parser.add_argument('-c', '--config', help='Path to the configuration.json', required=True)
         parsed_args = parser.parse_args()
         return parsed_args
 
-    def create_txt_filename(self, dataset_type):
-        directory = getattr(self.datasets, dataset_type)
-
-        def dialogue_generator():
-            filenames = [os.path.join(directory, file) for file in os.listdir(directory) if file.endswith('.json')]
-            for filename in filenames:
-                with open(filename, 'rt', encoding='utf-8') as f:
-                    for dialogue in json.load(f):
-                        yield dialogue
-
-        txt_directory = os.path.join(self.output_dir, os.path.basename(directory))
-        os.makedirs(txt_directory)
-        context_filename = os.path.(txt_directory, "context.txt")
-        answer_filename = os.path.join(txt_directory, "answer.txt")
-        create_textline_file(dialogue_gen=dialogue_generator(),
-                             context_filename=context_filename,
-                             answer_filename=answer_filename)
-        return context_filename, answer_filename
 
     def main(self):
         """Initializes a model and starts training using the args provided
         """
 
         params = self.config.model_params
-        params["eos_token"] = self._metadata["eos_token"]
-        params.encoder_params.embed_params["vocab_size"] = \
-            params.decoder_params.embed_params["vocab_size"] = \
-            params.decoder_params.params["vocab_size"] = self._metadata["vocab_size"]
+        params.pad_token = self._metadata.pad_token
+        params.encoder_params.embed_params.vocab_size = \
+            params.decoder_params.embed_params.vocab_size = \
+            params.decoder_params.params.vocab_size = self._metadata.vocab_size
 
-        model = TransformerAlgorithm(estimator_run_config=params.estimator_params, params=params)
-        self.train(model=model)
+        estimator_run_config = RunConfig().replace(**self.config.estimator_params)
+        model = TransformerAlgorithm(estimator_run_config=estimator_run_config, params=params)
+
+        if self.datasets.valid_data_dir is not None:
+            self.train_and_evaluate(model=model)
+        else:
+            self.train(model=model)
 
     def train(self, model):
-        context_filename, answer_filename = self.create_txt_filename("train_data_dir")
+        model.train(train_params=self.config.train_params,
+                                 train_context_filename=os.path.join(self.datasets.train_data_dir, "context.txt"),
+                                 train_answer_filename=os.path.join(self.datasets.train_data_dir, "answer.txt"))
+
+    def train_and_evaluate(self, model):
         model.train_and_evaluate(train_params=self.config.train_params,
-                                 train_answer_filename=answer_filename,
-                                 train_context_filename=context_filename)
+                                 train_context_filename=os.path.join(self.datasets.train_data_dir, "context.txt"),
+                                 train_answer_filename=os.path.join(self.datasets.train_data_dir, "answer.txt"),
+                                 validation_params=self.config.train_params,
+                                 validation_context_filename=os.path.join(self.datasets.valid_data_dir, "context.txt"),
+                                 validation_answer_filename=os.path.join(self.datasets.valid_data_dir, "answer.txt"))
 
 
 if __name__ == '__main__':
@@ -85,5 +78,5 @@ if __name__ == '__main__':
 
     with open(args.metadata, mode='r') as metadata_file:
         args.metadata = json.load(metadata_file)
-
+    args = vars(args)
     TrainAttention(**args).main()

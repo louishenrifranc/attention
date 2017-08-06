@@ -1,3 +1,5 @@
+from tqdm import trange
+import logging
 import numpy as np
 import argparse
 import json
@@ -29,7 +31,7 @@ class CreateCopyTask(object):
 
     def create_copy_task_files(self, context_filename, answer_filename, vocab_size, num_examples, max_sequence_length):
         with open(context_filename, 'w') as file:
-            for _ in range(num_examples):
+            for _ in trange(num_examples):
                 num_tokens = np.random.randint(2, max_sequence_length, 1)
                 tokens = np.random.randint(0, vocab_size, num_tokens)
                 file.write(" ".join([str(x) for x in list(tokens)]) + "\n")
@@ -45,12 +47,14 @@ class CreateCopyTask(object):
         os.makedirs(train_dir, exist_ok=True)
         os.makedirs(eval_dir, exist_ok=True)
 
+        logging.info("Create Training data")
         self.create_copy_task_files(
             context_filename=os.path.join(train_dir, "context.txt"),
             answer_filename=os.path.join(train_dir, "answer.txt"),
             **self.config.train_params
         )
 
+        logging.info("Create Validation data")
         self.create_copy_task_files(
             context_filename=os.path.join(eval_dir, "context.txt"),
             answer_filename=os.path.join(eval_dir, "answer.txt"),

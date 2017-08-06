@@ -40,9 +40,14 @@
     "num_epochs": 3,
     "steps": 100
   },
-  "test_params": {},
+  
+  "validation_params": {
+    "batch_size": 32,
+    "num_epochs": 1,
+    "steps": null
+  },
   "estimator_params": {
     "save_summary_steps": 20,
-    "save_checkpoints_steps": 20,
+    "save_checkpoints_steps": 20
   }
 }
