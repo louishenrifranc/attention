@@ -47,8 +47,9 @@ class TrainAttention(object):
         params.encoder_params.embed_params.vocab_size = \
             params.decoder_params.embed_params.vocab_size = \
             params.decoder_params.params.vocab_size = self._metadata.vocab_size
-
-        estimator_run_config = RunConfig().replace(**self.config.estimator_params)
+        estimator_params = self.config.estimator_params
+        estimator_params.model_dir = self.output_dir
+        estimator_run_config = RunConfig().replace(**estimator_params)
         model = TransformerAlgorithm(estimator_run_config=estimator_run_config, params=params)
 
         if self.datasets.valid_data_dir is not None:

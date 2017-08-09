@@ -5,49 +5,48 @@
       "encoder_block_params": {
         "num_heads": 8,
         "hidden_size": 512,
-        "dropout_rate": 0.5
+        "dropout_rate": 0.3
       },
       "embed_params": {
-        "vocab_size": 32,
         "embed_dim": 128
       },
       "params": {
-        "dropout_rate": 0.5,
-        "num_blocks": 3
+        "dropout_rate": 0.3,
+        "num_blocks": 4
       }
     },
     "decoder_params": {
       "decoder_block_params": {
         "num_heads": 8,
         "hidden_size": 512,
-        "dropout_rate": 0.5
+        "dropout_rate": 0.3
       },
       "embed_params": {
-        "vocab_size": 32,
         "embed_dim": 128
       },
       "params": {
-        "dropout_rate": 0.5,
-        "num_blocks": 3,
-        "vocab_size": 32
+        "dropout_rate": 0.3,
+        "num_blocks": 4 
       }
     }
   },
   "train_params": {
     "learning_rate": 0.001,
-    "clip_gradients": 5.0,
+    "clip_gradients": 10.0,
     "batch_size": 32,
-    "num_epochs": 3,
-    "steps": 100
+    "num_epochs": 50,
+    "steps": null
   },
   
   "validation_params": {
     "batch_size": 32,
     "num_epochs": 1,
-    "steps": null
+    "steps": 100,
+    "min_eval_frequency": 1000
   },
   "estimator_params": {
-    "save_summary_steps": 20,
-    "save_checkpoints_steps": 20
+    "save_summary_steps": 500,
+    "save_checkpoints_steps": 500,
+    "model_dir": null
   }
 }

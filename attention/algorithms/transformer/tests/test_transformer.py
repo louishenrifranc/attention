@@ -9,11 +9,11 @@ from attention.utils.mock import mock_dialogue_gen
 from attention.algorithms.transformer.inputs_fn import create_textline_file
 from attention.utils.config import AttrDict, RunConfig
 
-class TestHREDAlgorithm(tf.test.TestCase):
+class TestTransformerAlgorithm(tf.test.TestCase):
     def setUp(self):
-        super(TestHREDAlgorithm, self).setUp()
-
-        test_folder = os.makedirs("test", exist_ok=True)
+        super(TestTransformerAlgorithm, self).setUp()
+        test_folder = "test"
+        os.makedirs(test_folder, exist_ok=True)
         self.params = AttrDict.from_nested_dict(model_params)
         self.train_params = train_params
         self.validation_params = validation_params
@@ -32,10 +32,9 @@ class TestHREDAlgorithm(tf.test.TestCase):
         self.algorithm = TransformerAlgorithm(estimator_run_config, params=self.params)
 
     def test_train_and_evaluate(self):
-        self.train_params["steps"] = 20
+        self.train_params["steps"] = 50
         with self.assertLogs() as cm:
             self.algorithm.train_and_evaluate(self.train_params, self.context_filename, self.answer_filename, self.validation_params, self.context_filename, self.answer_filename)
-
         logs = cm.output
         self.assertTrue(logs[2].startswith("INFO:tensorflow:Saving checkpoints for 1 into"))
         steps = re.findall("loss = \d*.\d*", ' '.join(logs))

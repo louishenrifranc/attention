@@ -5,6 +5,7 @@ from attention.modules import TransformerModule
 
 from attention.algorithms.transformer.inputs_fn import get_input_fn
 
+tf.logging.set_verbosity(tf.logging.INFO)
 
 class TransformerAlgorithm:
     def __init__(self, estimator_run_config, params = None):
@@ -70,12 +71,18 @@ class TransformerAlgorithm:
                                            context_filename=validation_context_filename,
                                            answer_filename=validation_answer_filename)
 
+        logging_tensor_hook = tf.train.LoggingTensorHook(tensors=["transformer/decoder/loss/accuracy:0"], every_n_iter=100)
+        if extra_hooks is None:
+            extra_hooks = [logging_tensor_hook]
+        else:
+            extra_hooks.append(logging_tensor_hook)
+
         self.experiment = tf.contrib.learn.Experiment(estimator=self.estimator,
                                                       train_input_fn=input_fn,
                                                       eval_input_fn=validation_input_fn,
                                                       train_steps=train_params.get("steps", None),
-                                                      eval_steps=1,
+                                                      eval_steps=validation_params["steps"],
                                                       train_monitors=extra_hooks,
-                                                      train_steps_per_iteration=100)
+                                                      min_eval_frequency=validation_params.get("min_eval_frequency", None))
 
         self.experiment.train_and_evaluate()
