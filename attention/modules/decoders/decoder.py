@@ -34,16 +34,14 @@ class Decoder(snt.AbstractModule):
         one_hot_labels = tf.one_hot(labels, self.params.vocab_size, axis=-1)
         with tf.name_scope("loss"):
             mask_loss = tf.sequence_mask(sequence_length, maxlen=max_sequence_length, dtype=tf.float32)
-            logits = tf.reshape(logits, [-1, self.params.vocab_size])
             one_hot_labels = tf.reshape(one_hot_labels, [-1, self.params.vocab_size])
-            loss = tf.nn.softmax_cross_entropy_with_logits(logits=logits,
+            loss = tf.nn.softmax_cross_entropy_with_logits(logits=tf.reshape(logits, [-1, self.params.vocab_size]),
                                                            labels=one_hot_labels)
             loss = tf.reshape(loss, [-1, max_sequence_length])
             loss *= mask_loss
             loss = tf.reduce_sum(loss, 1) / tf.reduce_sum(mask_loss, 1)
-            mean_loss = tf.reduce_sum(loss)
+            mean_loss = tf.reduce_mean(loss)
 
-            logits = tf.reshape(logits, [-1, max_sequence_length, self.params.vocab_size])
             pred = tf.argmax(logits, axis=-1)
             acc = tf.equal(pred, labels)
             acc = tf.reduce_sum(tf.to_float(acc) * mask_loss, 1) / tf.reduce_sum(mask_loss, 1)

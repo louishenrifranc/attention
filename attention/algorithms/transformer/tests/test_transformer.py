@@ -9,9 +9,9 @@ from attention.utils.mock import mock_dialogue_gen
 from attention.algorithms.transformer.inputs_fn import create_textline_file
 from attention.utils.config import AttrDict, RunConfig
 
-class TestTransformerAlgorithm(tf.test.TestCase):
+class TestHREDAlgorithm(tf.test.TestCase):
     def setUp(self):
-        super(TestTransformerAlgorithm, self).setUp()
+        super(TestHREDAlgorithm, self).setUp()
         test_folder = "test"
         os.makedirs(test_folder, exist_ok=True)
         self.params = AttrDict.from_nested_dict(model_params)

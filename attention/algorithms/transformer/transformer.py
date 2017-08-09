@@ -71,7 +71,7 @@ class TransformerAlgorithm:
                                            context_filename=validation_context_filename,
                                            answer_filename=validation_answer_filename)
 
-        logging_tensor_hook = tf.train.LoggingTensorHook(tensors=["transformer/decoder/loss/accuracy:0"], every_n_iter=100)
+        logging_tensor_hook = tf.train.LoggingTensorHook(tensors=["transformer/decoder/loss/accuracy:0"], every_n_iter=1)
         if extra_hooks is None:
             extra_hooks = [logging_tensor_hook]
         else:
@@ -85,4 +85,4 @@ class TransformerAlgorithm:
                                                       train_monitors=extra_hooks,
                                                       min_eval_frequency=validation_params.get("min_eval_frequency", None))
 
-        self.experiment.train_and_evaluate()
+        self.experiment.train()

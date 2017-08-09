@@ -21,7 +21,6 @@ class TransformerModule(snt.AbstractModule):
         )
 
         encoder_output, positional_embedding = encoder(inputs=encoder_inputs, sequences_length=encoder_length)
-
         decoder = Decoder(
             params=self.params.decoder_params.params,
             block_params=self.params.decoder_params.decoder_block_params,

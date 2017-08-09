@@ -19,7 +19,6 @@ class EncoderBlock(snt.AbstractModule):
                                                                                               keys_len=keys_len)
         output += queries
         output = LayerNorm()(output)
-
         pointwise_module = PointWiseFeedForward(
             hidden_size=self.hidden_size,
             output_size=output.get_shape().as_list()[-1],
