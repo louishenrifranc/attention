@@ -64,12 +64,14 @@ class TransformerAlgorithm:
         input_fn = get_input_fn(batch_size=train_params["batch_size"],
                                 num_epochs=train_params["num_epochs"],
                                 context_filename=train_context_filename,
-                                answer_filename=train_answer_filename)
+                                answer_filename=train_answer_filename,
+                                max_sequence_len=train_params["max_sequence_len"])
 
         validation_input_fn = get_input_fn(batch_size=validation_params["batch_size"],
                                            num_epochs=validation_params["num_epochs"],
                                            context_filename=validation_context_filename,
-                                           answer_filename=validation_answer_filename)
+                                           answer_filename=validation_answer_filename,
+                                           max_sequence_len=validation_params["max_sequence_len"])
 
         logging_tensor_hook = tf.train.LoggingTensorHook(tensors=["transformer/decoder/loss/accuracy:0"], every_n_iter=1)
         if extra_hooks is None:

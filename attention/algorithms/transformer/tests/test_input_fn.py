@@ -26,7 +26,7 @@ class TestInputFunction(tf.test.TestCase):
         sample_gen = mock_dialogue_gen()
         create_textline_file(sample_gen, context_filename, answer_filename)
 
-        input_fn = get_input_fn(batch_size, num_epochs, context_filename, answer_filename)
+        input_fn = get_input_fn(batch_size, num_epochs, context_filename, answer_filename, max_sequence_len=20)
         inputs, _ = input_fn()
 
         init = tf.global_variables_initializer()

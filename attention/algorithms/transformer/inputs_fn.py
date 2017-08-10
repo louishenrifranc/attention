@@ -55,7 +55,7 @@ def create_textline_file(dialogue_gen, context_filename, answer_filename):
             answer_file.write(" ".join([str(x) for x in features["answer"]]) + "\n")
 
 
-def get_input_fn(batch_size, num_epochs, context_filename, answer_filename, max_sequence_len=50):
+def get_input_fn(batch_size, num_epochs, context_filename, answer_filename, max_sequence_len):
     def input_fn():
         source_dataset = tf.contrib.data.TextLineDataset(context_filename)
         target_dataset = tf.contrib.data.TextLineDataset(answer_filename)
