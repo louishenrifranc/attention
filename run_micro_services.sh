@@ -25,13 +25,12 @@ while test $# -gt 0; do
 done
 
 if [ "$EXP_NAME" = '' ]; then
-	echo "ERROR: Please specify a name for the experimentation --name exp_name"
-	exit 1
+	echo "Experiment will be run without saving current version of the code/config"
+else
+	echo "Saving current configuration and files"
+	mkdir -p $OUTPUT_DIR
+	tar -zcf $OUTPUT_DIR\/$EXP_NAME.tar.gz $CODE_FOLDER\/.
 fi
-
-echo "Saving current configuration and files"
-mkdir -p $OUTPUT_DIR
-tar -zcf $OUTPUT_DIR\/$EXP_NAME.tar.gz $CODE_FOLDER\/.
 
 echo "Running Task Data Generation"
 python3 attention/services/create_copy_task/create_copy_task.py --output_dir $OUTPUT_DIR --config $TASK_CONFIG
