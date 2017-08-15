@@ -2,6 +2,7 @@ import tensorflow as tf
 from attention.modules.decoders import Decoder
 from attention.utils.config import AttrDict
 
+
 # TODO: add test about adding Embeddding
 class TestDecoder(tf.test.TestCase):
     def setUp(self):

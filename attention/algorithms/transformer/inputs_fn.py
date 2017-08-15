@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 import shutil
 
+
 def filter_and_modify_dialogue(dialogue):
     # Remove single role dialogues
     if len(set([utterance.metadata["role"] for utterance in dialogue.utterances])) < 2:
@@ -48,6 +49,7 @@ def create_copy_task_files(context_filename, answer_filename, vocab_size, num_ex
 
     shutil.copyfile(context_filename, answer_filename)
 
+
 def create_textline_file(dialogue_gen, context_filename, answer_filename):
     with open(context_filename, "w") as context_file, open(answer_filename, "w") as answer_file:
         for features in create_sample(dialogue_gen):
@@ -55,7 +57,7 @@ def create_textline_file(dialogue_gen, context_filename, answer_filename):
             answer_file.write(" ".join([str(x) for x in features["answer"]]) + "\n")
 
 
-def get_input_fn(batch_size, num_epochs, context_filename, answer_filename, max_sequence_len):
+def get_train_input_fn(batch_size, num_epochs, context_filename, answer_filename, max_sequence_len):
     def input_fn():
         source_dataset = tf.contrib.data.TextLineDataset(context_filename)
         target_dataset = tf.contrib.data.TextLineDataset(answer_filename)
@@ -83,6 +85,17 @@ def get_input_fn(batch_size, num_epochs, context_filename, answer_filename, max_
 
     return input_fn
 
-import os
-os.makedirs("../../../files/", exist_ok=True)
-create_copy_task_files("../../../files/context.txt", "../../../files/answer.txt", 10000, 200000, 150)
+
+def get_predict_input_fn(inputs, bos_token):
+    def input_fn():
+        batch_size = inputs.shape[0]
+        max_sequence_length = inputs.shape[1]
+
+        encoder_sequence_length = tf.ones(batch_size) * max_sequence_length
+        encoder_input = inputs
+        decoder_inputs = tf.ones((batch_size, max_sequence_length))
+        decoder_inputs[:, 0] = tf.constant(bos_token)
+
+        return (encoder_input, encoder_sequence_length), (decoder_inputs, tf.zeros(batch_size))
+
+    return input_fn

@@ -5,12 +5,11 @@ import os
 
 from attention.utils.config import AttrDict, RunConfig
 from attention.algorithms import TransformerAlgorithm
-from attention.algorithms.transformer.inputs_fn import create_textline_file
 
 DatasetDirs = namedtuple("DatasetDirs", "train_data_dir valid_data_dir test_data_dir")
 
 
-class TrainAttention(object):
+class TrainAttention:
     def __init__(self, config, train_data_dir, valid_data_dir, output_dir, metadata):
         self.output_dir = output_dir
         self.datasets = DatasetDirs(train_data_dir=train_data_dir,
@@ -37,16 +36,19 @@ class TrainAttention(object):
         parsed_args = parser.parse_args()
         return parsed_args
 
-
     def main(self):
         """Initializes a model and starts training using the args provided
         """
-
+        vocab_size = self._metadata.vocab_size + len(self._metadata.special_tokens)
         params = self.config.model_params
-        params.pad_token = self._metadata.pad_token
+
+        for name, value in self._metadata.special_tokens.items():
+            params.name = value
+
         params.encoder_params.embed_params.vocab_size = \
             params.decoder_params.embed_params.vocab_size = \
-            params.decoder_params.params.vocab_size = self._metadata.vocab_size
+            params.decoder_params.params.vocab_size = vocab_size
+
         estimator_params = self.config.estimator_params
         estimator_params.model_dir = self.output_dir
         estimator_run_config = RunConfig().replace(**estimator_params)
@@ -59,8 +61,8 @@ class TrainAttention(object):
 
     def train(self, model):
         model.train(train_params=self.config.train_params,
-                                 train_context_filename=os.path.join(self.datasets.train_data_dir, "context.txt"),
-                                 train_answer_filename=os.path.join(self.datasets.train_data_dir, "answer.txt"))
+                    train_context_filename=os.path.join(self.datasets.train_data_dir, "context.txt"),
+                    train_answer_filename=os.path.join(self.datasets.train_data_dir, "answer.txt"))
 
     def train_and_evaluate(self, model):
         model.train_and_evaluate(train_params=self.config.train_params,

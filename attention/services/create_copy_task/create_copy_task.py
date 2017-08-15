@@ -29,11 +29,12 @@ class CreateCopyTask(object):
         parsed_args = parser.parse_args()
         return parsed_args
 
-    def create_copy_task_files(self, context_filename, answer_filename, vocab_size, num_examples, max_sequence_length):
+    def create_copy_task_files(self, context_filename, answer_filename, vocab_size, num_examples, max_sequence_length,
+                               num_special_tokens):
         with open(context_filename, 'w') as file:
             for _ in trange(num_examples):
                 num_tokens = np.random.randint(2, max_sequence_length, 1)
-                tokens = np.random.randint(0, vocab_size, num_tokens)
+                tokens = np.random.randint(num_special_tokens, vocab_size + num_special_tokens, num_tokens)
                 file.write(" ".join([str(x) for x in list(tokens)]) + "\n")
 
         shutil.copyfile(context_filename, answer_filename)

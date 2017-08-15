@@ -3,7 +3,7 @@ import tensorflow as tf
 import numpy as np
 
 from attention.utils.mock import mock_dialogue_gen
-from attention.algorithms.transformer.inputs_fn import create_sample, filter_and_modify_dialogue, get_input_fn, create_textline_file
+from attention.algorithms.transformer.inputs_fn import create_sample, get_train_input_fn, create_textline_file
 
 
 class TestInputFunction(tf.test.TestCase):
@@ -17,7 +17,6 @@ class TestInputFunction(tf.test.TestCase):
             self.assertIsInstance(sample["context"], list)
             self.assertIsInstance(sample["answer"], list)
 
-
     def test_get_input_fn(self):
         context_filename = "context.txt"
         answer_filename = "answer.txt"
@@ -26,7 +25,7 @@ class TestInputFunction(tf.test.TestCase):
         sample_gen = mock_dialogue_gen()
         create_textline_file(sample_gen, context_filename, answer_filename)
 
-        input_fn = get_input_fn(batch_size, num_epochs, context_filename, answer_filename, max_sequence_len=20)
+        input_fn = get_train_input_fn(batch_size, num_epochs, context_filename, answer_filename, max_sequence_len=20)
         inputs, _ = input_fn()
 
         init = tf.global_variables_initializer()
@@ -49,4 +48,3 @@ class TestInputFunction(tf.test.TestCase):
 
         os.remove(context_filename)
         os.remove(answer_filename)
-

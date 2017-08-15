@@ -26,7 +26,7 @@
       },
       "params": {
         "dropout_rate": 0.3,
-        "num_blocks": 4 
+        "num_blocks": 4
       }
     }
   },
@@ -37,7 +37,6 @@
     "num_epochs": 50,
     "steps": null
   },
-  
   "validation_params": {
     "batch_size": 32,
     "num_epochs": 1,

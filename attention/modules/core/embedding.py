@@ -15,8 +15,6 @@ class PositionnalEmbedding(snt.AbstractModule):
 
     def _build(self, ids):
         emb_lookup = self.embed(ids)
-        positionnal_embedding = tf.get_variable('positional_embedding',
-                                                dtype=tf.float32,
-                                                shape=emb_lookup[0].get_shape(),
-                                                initializer=tf.contrib.layers.xavier_initializer())
+        positionnal_embedding = tf.get_variable('positional_embedding', dtype=tf.float32,
+                                                shape=emb_lookup[0].get_shape())
         return emb_lookup + positionnal_embedding

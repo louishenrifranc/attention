@@ -2,11 +2,13 @@
   "train_params": {
     "vocab_size": 10000,
     "num_examples": 200000,
-    "max_sequence_length": 150
+    "max_sequence_length": 150,
+    "num_special_tokens": 3
   },
   "eval_params": {
     "vocab_size": 10000,
     "num_examples": 30000,
-    "max_sequence_length": 150
+    "max_sequence_length": 150,
+    "num_special_tokens": 3
   }
 }

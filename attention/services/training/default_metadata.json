@@ -1,0 +1,8 @@
+{
+  "vocab_size": 10000,
+  "special_tokens": {
+    "unk_token": 0,
+    "bos_token": 1,
+    "eos_token": 2
+  }
+}
