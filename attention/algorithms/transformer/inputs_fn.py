@@ -82,7 +82,3 @@ def get_input_fn(batch_size, num_epochs, context_filename, answer_filename, max_
         return next_element, None
 
     return input_fn
-
-import os
-os.makedirs("../../../files/", exist_ok=True)
-create_copy_task_files("../../../files/context.txt", "../../../files/answer.txt", 10000, 200000, 150)
